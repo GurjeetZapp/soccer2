@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "683264964718",
+    "project_id": "soccer-de43b",
+    "storage_bucket": "soccer-de43b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683264964718:android:e04c90f80cd14698664e7f",
+        "android_client_info": {
+          "package_name": "com.example.soccer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDg7_T7M-WAHZWJK1Y2TAVG2YLl2F7dLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
