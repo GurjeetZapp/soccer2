@@ -1,153 +1,142 @@
-import 'dart:io';
+import 'dart:convert';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:firebaseseries2/Screen/Auth/login_Page.dart';
-// import 'package:firebaseseries2/Screen/bottomnav/HomePage.dart';
-// import 'package:firebaseseries2/utils/app_routers.dart';
-
 import 'package:flutter/material.dart';
-
-
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart'; // For extracting the file name
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:soccer/Auth/log_in.dart';
+import 'package:soccer/appconstant.dart';
 import 'package:soccer/screen/bottomnavbar/Homescreen.dart';
 
 class SignupProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  String? userId;
   User? _user;
-  String ?_name = '';
-  
+  String? _name = '';
   String? _profileImageUrl;
-    String? guestName;
   bool _isGuest = false;
-    bool _isLoggedIn = false;
+  bool _isLoggedIn = false;
+  bool _isCheckingLoginStatus = true;
+  
+  String? username;
+  String? email;
+  String? phoneNumber;
+
   User? get user => _user;
   String? get profileImageUrl => _profileImageUrl;
   String? get name => _name;
-
-
-
   bool get isLoggedIn => _user != null;
   bool get isGuest => _isGuest;
-  void setName(String name) {
-    _name = name;
+  bool get isCheckingLoginStatus => _isCheckingLoginStatus;
+  
+  Future<bool> checkIfUserExists(String userId) async {
+  try {
+    final userDoc = await _firestore.collection('users').doc(userId).get();
+    return userDoc.exists;
+  } catch (e) {
+    print("Error checking user existence: $e");
+    return false;  // Return false if an error occurs
   }
-void saveUserData(String name, String email, String profileImageUrl) {
-    _name = name;
-   
-    notifyListeners();  
-  }
-
-  Future<void> loginAsGuest() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  _isLoggedIn = true;
-  await prefs.setBool('isLoggedIn', true);
-  _user = null;
-  _name = '';
-  _profileImageUrl = null;
-  _isGuest = true;
-  notifyListeners();
 }
-bool _isCheckingLoginStatus = true;
+Future<String?> getAwsImageLink(String imageLink, String bundleName) async {
+  // Generate a unique file name using the provided image link
+  String uniqueFileName = 'IMG_${DateTime.now().millisecondsSinceEpoch}${extension(imageLink)}';
 
-bool get isCheckingLoginStatus => _isCheckingLoginStatus;
+  // Prepare the payload for the signed URL request
+  final Map<String, String> payload = {
+    'fileName': uniqueFileName,
+    'bundle': bundleName,
+  };
 
-// Future<void> autoLogin() async {
-//   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//   _isLoggedIn = sharedPreferences.getBool('isLoggedIn') ?? false;
-//   _isCheckingLoginStatus = false;
-//   notifyListeners();
-// }
-// void _skipLogin() async {
-//   await clearUserData(); 
-//   _profileImageUrl = 'path_to_default_image'; 
-//   notifyListeners();
-// }
-//   void setProfileImageUrl(String url) {
-//     _profileImageUrl = url;
-//     notifyListeners();
-//   }
+  // The endpoint for generating the signed URL
+  final String url = AppConstant.awsBaseUrlUpload;
 
+  try {
+    // Convert the payload to JSON and make the POST request
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(payload),
+    );
 
-// Future<void> clearUserData() async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   await prefs.remove('userName');
-//   await prefs.remove('userEmail');
-//   await prefs.remove('profileImageUrl');
-// }
+    // Check if the response is successful
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody.containsKey('data')) {
+        String signedUrl = responseBody['data'];
 
+        // Upload the file to the signed URL
+        final File file = File(imageLink);
+        if (await file.exists()) {
+          final fileBytes = await file.readAsBytes();
+          final uploadResponse = await http.put(
+            Uri.parse(signedUrl),
+            headers: {
+              'Content-Type': 'application/octet-stream',
+              'Content-Length': fileBytes.length.toString(),
+            },
+            body: fileBytes,
+          );
 
-  
- 
-//   Future<void> login(String email, String password) async {
-  
-//     _isLoggedIn = true;
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     await sharedPreferences.setBool('isLoggedIn', true);
-//     notifyListeners();
-//   }
-
-
-  Future<void> _loadName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (isGuest) {
-      guestName = prefs.getString('guestName');
+          // If upload is successful, return the AWS image link
+          if (uploadResponse.statusCode == 200) {
+            String awsImageLink = AppConstant.awsBaseUrlUpload + '/' + bundleName + '/' + uniqueFileName;
+            return awsImageLink;
+          } else {
+            debugPrint('Failed to upload file: ${uploadResponse.body}');
+          }
+        } else {
+          debugPrint('File not found at the specified path: $imageLink');
+        }
+      }
     } else {
-      _name
-       = prefs.getString('userName');
+      debugPrint('Failed to generate signed URL: ${response.body}');
     }
-    notifyListeners();
+  } catch (e) {
+    debugPrint('Error: $e');
   }
+  return null; // Return null if the process fails
+}
 
-
-  void updateName(String newName) {
-    _name = newName;
-    notifyListeners(); 
-  }
-
-  void updateGuestName(String newGuestName) {
-    guestName = newGuestName;
-    notifyListeners();  
-  }
-
-  // Future<void> updateUserDetails(
-  //     {required String name, required String email}) async {
-  //   if (_user != null) {
-  //     await _firestore.collection('users').doc(_user!.uid).update({
-  //       'name': name,
-  //       'email': email,
-  //     });
-  //     _name = name;
-  //     notifyListeners();
-  //   }
-  // }
-
-  Future<bool> signupUser({
+Future<bool> signupUser({
     required String name,
     required String email,
     required String password,
     required BuildContext context,
   }) async {
     try {
+      // Ensure user is signed out before attempting to sign up
+      if (_auth.currentUser != null) {
+        await _auth.signOut();
+      }
+
+      // Create the Firebase user
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      await _firestore.collection('users').doc(userCredential.user?.uid).set({
+      if (userCredential.user == null) {
+        _showErrorDialog(context, "Signup Failed", "Could not create user.");
+        return false;
+      }
+
+      // Save user data to Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': name,
         'email': email,
         'createdAt': DateTime.now(),
       });
 
+      // Update local variables and navigate to the home screen
       _user = userCredential.user;
       _name = name;
       _isGuest = false;
@@ -160,144 +149,86 @@ bool get isCheckingLoginStatus => _isCheckingLoginStatus;
 
       return true;
     } catch (e) {
-      print("Signup error: $e");
-      showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      title: Text("Signup Failed"),
-      content: Text("Por favor, tente se inscrever novamente."),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text("OK"),
-        ),
-      ],
-    );
-  },
-);
-
-      return false;
-    }
-  }
-
-  // Future<void> loadUserData() async {
-  //   final user = _auth.currentUser;
-  //   if (user != null) {
-  //     final userData = await _firestore.collection('users').doc(user.uid).get();
-  //     _name = userData['name'];
-  //     _isGuest = false;
-  //     notifyListeners();
-  //   }
-  // }
-//   Future<void> _uploadProfileImage(String userId) async {
-//   final picker = ImagePicker();
-//   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-  
-//   if (pickedFile != null) {
-//     File file = File(pickedFile.path);
-//     try {
-    
-//       Reference storageReference = FirebaseStorage.instance.ref().child('profile_images/$userId');
-//       await storageReference.putFile(file);
-
-//       String downloadUrl = await storageReference.getDownloadURL();
-
-      
-//       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-//         'profileImageUrl': downloadUrl,
-//       });
-
-//       print('Profile image updated successfully');
-//     } catch (e) {
-//       print('Error uploading image: $e');
-//     }
-//   } else {
-//     print('No image selected.');
-//   }
-// }
-
- Future<bool> loginUser({
-  required String email,
-  required String password,
-  required BuildContext context,
-}) async {
-  try {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    if (userCredential.user != null) {
-      _user = userCredential.user;
-      _isGuest = false;
-
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user!.uid)
-          .get();
-
-      if (userDoc.exists) {
-        final userData = userDoc.data() as Map<String, dynamic>?;
-
-        _name = userData?['name'] ?? '';
-        _profileImageUrl = userData?['profileImageUrl'] ?? null;
+      // Catch specific errors for more user-friendly messages
+      if (e is FirebaseAuthException) {
+        switch (e.code) {
+          case 'email-already-in-use':
+            _showErrorDialog(
+                context, "Email In Use", "The email is already registered.");
+            break;
+          case 'invalid-email':
+            _showErrorDialog(
+                context, "Invalid Email", "The email address is not valid.");
+            break;
+          case 'weak-password':
+            _showErrorDialog(
+                context, "Weak Password", "Please choose a stronger password.");
+            break;
+          default:
+            _showErrorDialog(
+                context, "Signup Failed", "Please try to sign up again.");
+            break;
+        }
       } else {
-        _name = '';
-        _profileImageUrl = null;
+        _showErrorDialog(
+            context, "Signup Failed", "An unexpected error occurred.");
       }
-
-      notifyListeners();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
-      return true;
-    } else {
       return false;
     }
-  } catch (e) {
-    print("Login error: $e");  
-
-
-    return false;
   }
-}
 
+  // Login an existing user
+  Future<bool> loginUser({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  // // Method to upload image to Firebase Storage
-  // Future<String> uploadImageToFirebase(File imageFile) async {
-  //   try {
-  //     // Define a unique file name
-  //     String fileName = DateTime.now().millisecondsSinceEpoch.toString() + '.jpg';
-  //     Reference storageRef = FirebaseStorage.instance.ref().child('profile_images/$fileName');
+      if (userCredential.user != null) {
+        _user = userCredential.user;
+        _isGuest = false;
 
-  //     // Upload the file to Firebase Storage
-  //     UploadTask uploadTask = storageRef.putFile(imageFile);
-  //     await uploadTask;
+        // Load user data after logging in
+        await loadUserData();
 
-  //     // Get the download URL
-  //     String downloadUrl = await storageRef.getDownloadURL();
-  //     print("Uploaded Image URL: $downloadUrl"); // Debug print
-  //     return downloadUrl;
-  //   } catch (e) {
-  //     print("Error uploading image: $e");
-  //     throw e; // Handle error as needed
-  //   }
-  // }
+        notifyListeners();
 
-  // // Method to upload profile image and update the URL
-  // Future<void> uploadProfileImage(File imageFile) async {
-  //   // Call the uploadImageToFirebase method
-  //   String url = await uploadImageToFirebase(imageFile);
-  //   _profileImageUrl = url; // Set the URL here
-  //   notifyListeners(); // Notify listeners about the change
-  // }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Login error: $e");
+      return false;
+    }
+  }
 
+  // Logout method
+  Future<void> signOut(BuildContext context) async {
+    await _auth.signOut();
+    _user = null;
+    _name = '';
+    _isGuest = false; // Reset the guest status
+    notifyListeners();
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+  }
 
+  // Auto login for persistent sessions
+  Future<void> autoLogin() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    _isLoggedIn = sharedPreferences.getBool('isLoggedIn') ?? false;
+    _isCheckingLoginStatus = false;
+    notifyListeners();
+  }
   Future<bool> signInWithApple(BuildContext context) async {
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
@@ -335,143 +266,52 @@ bool get isCheckingLoginStatus => _isCheckingLoginStatus;
     return false;
   }
 
-  Future<bool> signInAnonymously(BuildContext context) async {
-    try {
-      UserCredential userCredential = await _auth.signInAnonymously();
-      User? user = userCredential.user;
 
-      if (user != null) {
-        _user = user;
-        _name = "Guest";
-        _isGuest = true;
-        _profileImageUrl = "profileImageUrl"; // Set a default profile image URL
-
-        notifyListeners();
-      }
-
-      return true;
-    } catch (e) {
-      print("Error during anonymous login: $e");
-      return false;
-    }
-  }
-
-
-  Future<void> sendPasswordResetEmail(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-
-      notifyListeners();
-    } catch (e) {
-      throw Exception('Error sending reset email: $e');
-    }
-  }
-
-  
-
-Future<void> _logout(BuildContext context) async {
-  try {
-  
-    await _auth.signOut();
-
-   
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userName');
-    await prefs.remove('userEmail');
-    await prefs.remove('profileImageUrl');
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => MainScreen()),
-    );
-  } catch (e) {
-   
-    print('Error signing out: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error signing out: $e')),
-    );
-  }
-}
-
-Future<void> signOut(BuildContext context) async {
-  await _auth.signOut();
-
-  _user = null;
-  _name='';
-  
-  notifyListeners();
-
-  
-}
-Future<void> deleteAccount(BuildContext context) async {
+Future<void> deleteAccount(BuildContext parentContext) async {
   showDialog(
-    context: context,
+    context: parentContext,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Excluir conta"),
-        content: Text("Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita."),
+        title: const Text("Delete account"),
+        content: const Text("Are you sure you want to delete your account? This action cannot be undone."),
         actions: <Widget>[
           TextButton(
-            child: Text("Cancelar"),
+            child: const Text("Cancel"),
             onPressed: () {
-              Navigator.of(context).pop();  
+              Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text("Excluir"),
+            child: const Text("Delete"),
             onPressed: () async {
-              Navigator.of(context).pop();  
-              
-              User? user = _auth.currentUser;
+              Navigator.of(context).pop();
+              User? user = FirebaseAuth.instance.currentUser;
 
               if (user != null) {
                 try {
-                  
+                  // Prompt for password and reauthenticate
+                  await reauthenticateUser(parentContext, user);
+
+                  // Delete user
                   await user.delete();
-                
-                  await signOut(context); 
+                  print("Account deleted successfully.");
 
-                
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Conta excluída com sucesso."),
+                  // Show success message
+                  ScaffoldMessenger.of(parentContext).showSnackBar(const SnackBar(
+                    content: Text("Account deleted successfully."),
                   ));
 
-                 
-                 Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen())); 
-
+                  // Navigate to Login screen
+                  Navigator.pushReplacement(
+                    parentContext,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
                 } catch (e) {
-                  print(e);
-                  String message;
-
-                
-                  if (e is FirebaseAuthException && e.code == 'requires-recent-login') {
-                    message = "Você precisa fazer login novamente antes de excluir sua conta.";
-                  } else {
-                    message = "Erro ao excluir conta. Por favor, tente novamente.";
-                  }
-
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(message),
-                  ));
+                  print("Error deleting account: $e");
+                  _showErrorDialog(parentContext, "Error", "Failed to delete account: $e");
                 }
               } else {
-                showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Atenção"),
-        content: Text("Usuário não autenticado."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();  
-            },
-            child: Text("OK"),
-          ),
-        ],
-      );
-    },
-  );
-
+                _showErrorDialog(parentContext, "Attention", "Unauthenticated user.");
               }
             },
           ),
@@ -481,24 +321,511 @@ Future<void> deleteAccount(BuildContext context) async {
   );
 }
 
+Future<String?> _promptForPassword(BuildContext context) async {
+  String? password;
+  return showDialog<String>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Enter Password"),
+        content: TextField(
+          obscureText: true,
+          decoration: const InputDecoration(hintText: "Password"),
+          onChanged: (value) {
+            password = value;
+          },
+        ),
+        actions: [
+          TextButton(
+            child: const Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop(null);
+            },
+          ),
+          TextButton(
+            child: const Text("Submit"),
+            onPressed: () {
+              Navigator.of(context).pop(password);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+Future<void> reauthenticateUser(BuildContext context, User user) async {
+  String? password = await _promptForPassword(context);
+  if (password == null || password.isEmpty) {
+    throw Exception("Password is required for reauthentication.");
+  }
+
+  try {
+    AuthCredential credential = EmailAuthProvider.credential(
+      email: user.email!,
+      password: password,
+    );
+    await user.reauthenticateWithCredential(credential);
+    print("User reauthenticated successfully.");
+  } catch (e) {
+    print("Reauthentication failed: $e");
+    throw Exception("Reauthentication failed: $e");
+  }
+}
 
 
 
+Future<bool> signInAsGuest(BuildContext context) async {
+  try {
+    // Sign in anonymously
+    UserCredential userCredential = await _auth.signInAnonymously();
+    _user = userCredential.user;
+
+    if (_user != null) {
+      // Set guest flag and update Firestore with guest data
+      _isGuest = true;
+      await _firestore.collection('users').doc(_user!.uid).set({
+        'username': 'Guest',
+        'email': 'guest@example.com',
+        'phone_number': '',
+        'profile_image': '',
+      });
+
+      // Notify listeners that the user is now signed in as a guest
+      notifyListeners();
+
+      // Optionally navigate to the home screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) =>  MainScreen()),
+      );
+
+      print("Guest user signed in with ID: ${_user!.uid}");
+      return true;
+    } else {
+      print("Anonymous sign-in failed");
+      return false;
+    }
+  } catch (e) {
+    print("Error signing in as guest: $e");
+    return false;
+  }
+}
+
+
+  Future<void> loadUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        userId = user.uid; // Get the user ID from FirebaseAuth
+
+        final userDoc = await _firestore.collection('users').doc(userId).get();
+
+        if (userDoc.exists) {
+          final data = userDoc.data();
+          print("User Data: $data"); // Log retrieved user data
+          _name = data?['name'] ?? 'Guest'; // Default to Guest
+          email = data?['email'] ?? '';
+          phoneNumber = data?['phone_number'] ?? '';
+          uploadedFileUrl = data?['profile_image'] ?? '';
+          notifyListeners();
+        } else {
+          print("User document does not exist, creating a new one.");
+          // Optionally create a new document for the guest user if it doesn't exist
+          await _firestore.collection('users').doc(userId).set({
+            'username': 'Guest',
+            'email': 'guest@example.com',
+            'phone_number': '',
+            'profile_image': '',
+          });
+        }
+        notifyListeners(); // Notify listeners after loading user data
+      } else {
+        print("No user is currently signed in.");
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
+
+  // Utility method for showing error dialog
+  void _showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  
+
+
+  // Delete Account Function
+Future<bool> deleteAccount(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      bool confirmDelete = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Account'),
+          content: const Text(
+              'Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmDelete) {
+        try {
+          // Delete user data from Firestore
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .delete();
+
+          // Delete the user from Firebase Auth
+          await user.delete();
+
+          // Navigate to the login screen after deletion
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Account deleted successfully')),
+          );
+          return true;
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'requires-recent-login') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text(
+                      'Please sign in again to delete your account.')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error: ${e.message}')),
+            );
+          }
+          return false;
+        }
+      } else {
+        // User canceled the deletion
+        return false;
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User is not logged in')),
+      );
+      return false;
+    }
+  }
+}
+
+  // Handle account deletion error
+void _handleAccountDeletionError(dynamic error, BuildContext context) {
+  if (error.toString().contains("requires-recent-login")) {
+    _showErrorDialog(context, "Error", 
+      "You need to reauthenticate before deleting your account.");
+  } else {
+    _showErrorDialog(context, "Error", error.toString());
+  }
+}
+
+
+  final ImagePicker _picker = ImagePicker();
+  String _fileName = '';
+  File? file;
+  String bundleName = "403";
+  String _uploadedFileUrl = '';
+
+String get uploadedFileUrl => _uploadedFileUrl;
+
+set uploadedFileUrl(String value) {
+  _uploadedFileUrl = value;
+  // notifyListeners();
+}
 
 
 
-//   Future<void> updateGuestUserNameAndEmail(
-//       {required String name, required String email}) async {
-//     if (_user != null && _user!.isAnonymous) {
-//       _name = name;
+  /// photos/folder1/photo.png
+  /// Function to pick image from gallery
+  Future<void> getimage(BuildContext context,  XFile image,bool isGuestUser,bool isStory) async {
 
-//       await _firestore.collection('users').doc(_user!.uid).set({
-//         'name': name,
-//         'email': email,
-//       });
+    if (image != null) {
+      file = File(image.path);
 
-//       notifyListeners();
-//     }
-//   }
-// }
+      // Generate a unique file name using current date and time
+      String uniqueFileName = 'IMG_Profile_${DateTime.now().millisecondsSinceEpoch}${extension(image.path)}';
+
+      // Update the file name
+      debugPrint("Original File Name: ${basename(image.path)}");
+      debugPrint("Unique File Name: $uniqueFileName");
+
+      // setState(() {
+        _fileName = uniqueFileName;
+      // });
+       print('_fileName  ====> $_fileName');
+
+      if (_fileName.isNotEmpty) {
+        String? url = await getSignedUrl(_fileName, bundleName);
+        if (url != null && url.isNotEmpty && file != null) {
+          uploadFileToS3(url, file!.path, context, isGuestUser,isStory);
+        }
+      }
+    }
+  }
+
+  Future<String?> getSignedUrl(String fileName, String bundle) async {
+    // The URL for the CloudFront endpoint
+    final String url = AppConstant.awsBaseUrlUpload;
+    uploadedFileUrl= '/'+bundle+'/'+fileName;
+              notifyListeners();
+
+    print('uploadedFileUrl -> ${url+ uploadedFileUrl}');
+    // The JSON payload that will be sent in the request body
+    final Map<String, String> payload = {
+      'fileName': fileName, // image.png
+      'bundle': bundle,
+    };
+
+    // Convert the payload to JSON
+    final String jsonPayload = json.encode(payload);
+
+    try {
+      // Make the PUT request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonPayload,
+      );
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        debugPrint('getSignedUrl Request successful: ${response.body}');
+        Map map = json.decode(response.body);
+        if (map.containsKey("data")) {
+          String signedUrl = map['data'];
+          return signedUrl;
+        }
+      } else {
+        debugPrint(
+            'getSignedUrl Failed request: ${response.statusCode} : ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('getSignedUrl Error: $e');
+    }
+    return null;
+  }
+
+  Future<void> uploadFileToS3(String signedUrl, String filePath, BuildContext context, bool isGuestUser,bool isStory) async {
+    try {
+      // Create a File object from the provided file path
+      final file = File(filePath);
+
+      // Make sure the file exists
+      if (await file.exists()) {
+        // Read the file as bytes
+        final fileBytes = await file.readAsBytes();
+
+        // Send a PUT request with the file bytes as the body
+        final response = await http.put(
+          Uri.parse(signedUrl), // The signed URL provided
+          headers: {
+            'Content-Type':
+            'application/octet-stream', // Ensure the correct content type
+            'Content-Length': fileBytes.length.toString(),
+          },
+          body: fileBytes, // Send the file content as the body
+        );
+        debugPrint("File uploaded string [${(await response).toString()}]");
+        // Check if the upload was successful
+        if (response.statusCode == 200) {
+          debugPrint("File uploaded body [${response.body}]");
+          // Map map = json.decode(response.body);
+          // await currentUserReference!
+          //     .update(createUsersRecordData(
+          //   photoUrl: uploadedFileUrl != ''
+          //       ? uploadedFileUrl
+          //       : currentUserPhoto,
+          // ));(
+          if(!isStory){
+ await  saveUserData(context, isGuestUser);
+          }
+          else{
+            await _saveUserDataStory(context, isGuestUser);
+          }
+         
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Profile picture uploaded successfully!'),
+                backgroundColor: Colors.green,
+              ),);
+          debugPrint('File uploaded successfully!');
+        } else {
+          debugPrint(
+              'File uploaded Failed to upload file: ${response.statusCode} : ${response.body}');
+          debugPrint(response.body);
+        }
+      } else {
+        debugPrint(
+            'File uploaded File not found at the specified path: $filePath');
+      }
+    } catch (e) {
+      debugPrint('File uploaded Error uploading file: $e');
+    }
+  }
+ 
+
+ 
+ 
+  Future<void> saveUserData(BuildContext context, bool isGuestUser ) async {
+  
+
+    try {
+      if (userId != null) {
+        // Create a reference to Firestore
+        final userCollection = FirebaseFirestore.instance.collection('users');
+
+        if (!isGuestUser) {
+          // Save logged-in user data to Firestore
+          await userCollection.doc(userId!).update({
+            // 'name': name,
+            // 'email': email,
+            // 'phone_number': phoneNumber,
+            'profile_image': uploadedFileUrl ?? "",
+          });
+        } else {
+          // Save guest user data to Firestore
+          await userCollection.doc(userId!).update({
+            // 'name': name,
+            // 'email': email,
+            // 'phone_number': phoneNumber,
+            'profile_image':  uploadedFileUrl,
+            'isGuest': true, // Add a flag to indicate guest user
+          });
+        }
+
+        // Save user data to SharedPreferences (both guest and logged-in users)
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('name', nameController.text);
+        // prefs.setString('email', emailController.text);
+        // prefs.setString('phone_number', phoneController.text);
+        prefs.setString('profile_image',  uploadedFileUrl);
+
+        // setState(() {
+          uploadedFileUrl =  uploadedFileUrl;
+            loadUserData();
+          notifyListeners();
+        // });
+      
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Updated successfully!")),
+        );
+      }
+
+
+    } catch (e) {
+      print("Error saving user data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving user data: $e")),
+      );
+    }
+  }
+  Future<void> _saveUserDataStory(BuildContext context, bool isGuestUser ) async {
+  
+
+    try {
+      if (userId != null) {
+        // Create a reference to Firestore
+        final userCollection = FirebaseFirestore.instance.collection('users');
+
+        if (!isGuestUser) {
+          // Save logged-in user data to Firestore
+          await userCollection.doc(userId!).update({
+            // 'name': nameController.text,
+            // 'email': emailController.text,
+            // 'phone_number': phoneController.text,
+            'Story': uploadedFileUrl ?? "",
+          });
+        } else {
+          // Save guest user data to Firestore
+          await userCollection.doc(userId!).update({
+            // 'name': nameController.text,
+            // 'email': emailController.text,
+            // 'phone_number': phoneController.text,
+            'Story':  uploadedFileUrl,
+            'isGuest': true, // Add a flag to indicate guest user
+          });
+        }
+
+        // Save user data to SharedPreferences (both guest and logged-in users)
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('name', nameController.text);
+        // prefs.setString('email', emailController.text);
+        // prefs.setString('phone_number', phoneController.text);
+        prefs.setString('profile_image',  uploadedFileUrl);
+
+        // setState(() {
+          uploadedFileUrl =  uploadedFileUrl;
+          notifyListeners();
+        // });
+        loadUserData();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Updated successfully!")),
+        );
+      }
+
+
+    } catch (e) {
+      print("Error saving user data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error saving user data: $e")),
+      );
+    }
+  }
+
+  //  Future<void> _loadUserData() async {
+  //   try {
+  //     if (userId != null) {
+  //       // Load user data from Firestore if logged in
+  //       final userDoc = await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userId)
+  //           .get();
+
+  //       if (userDoc.exists) {
+  //         final data = userDoc.data();
+  //         nameController.text = data?['name'] ?? '';
+  //         emailController.text = data?['email'] ?? '';
+  //         phoneController.text = data?['phone_number'] ?? '';
+  //         provider.uploadedFileUrl = data?['profile_image'] ?? '';
+  //         setState(() {}); // Refresh UI with data from Firestore
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Error loading user data: $e");
+  //   }
+  // }
+
 }

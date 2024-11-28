@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+
 import 'package:soccer/apputils/appcolor.dart';
-import 'package:soccer/screen/bottomnavbar/Homescreen.dart';
+
 import 'package:soccer/screen/onboarding/onbordingscreens.dart';
 
 

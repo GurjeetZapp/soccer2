@@ -7,10 +7,39 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
+dependencies {
+  // Import the Firebase BoM
+  implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+  implementation 'androidx.multidex:multidex:2.0.1'
+
+
+
+  // TODO: Add the dependencies for Firebase products you want to use
+  // When using the BoM, don't specify versions in Firebase dependencies
+  // https://firebase.google.com/docs/android/setup#available-libraries
+}
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if(localPropertiesFile.exists()){
+    localPropertiesFile.withReader('UTF-8'){ reader ->
+    localProperties.load(reader)
+
+    }
+}
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
 
 android {
     namespace = "com.example.soccer"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -27,10 +56,11 @@ android {
         applicationId = "com.example.soccer"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 33
+         targetSdk = 33
+        versionCode =1
+        versionName = "1.0"
+         multiDexEnabled true
     }
 
     buildTypes {

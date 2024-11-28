@@ -76,7 +76,7 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
           );
         } else {
           return Scaffold(
-  backgroundColor: const Color(0XFF0F1923),
+  backgroundColor: color6,
   body: SingleChildScrollView(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,119 +102,126 @@ class _InAppPurchasePageState extends State<InAppPurchasePage> {
         const SizedBox(height: 30),
         
         // Wrap Stack in a SizedBox with constraints
-        SizedBox(
-          width: double.infinity,
-          height: 200, // You can adjust the height as needed
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-   
-                          Positioned(left: 30,
-                          
-                           child: Image.asset("assets/Frame 4.png")),
-              Positioned(left: 95,
-              bottom: 90,
-               child: Image.asset("assets/image15.png")),
-              
-              Positioned(left: 218,
-              top:-0,
-               child: Image.asset("assets/image16.png")),
-               Positioned(left: 200,
-              top: 80,
-               child: Image.asset("assets/image17.png")),
-              Positioned(left: 60,
-              top: 130,
-               child: Image.asset("assets/Frame 7.png")),
-               
-              Positioned(left: 160,
-              bottom: -100,
-               child: Image.asset("assets/image18.png")),
-            ],
-          ),
-        ),
-        const SizedBox(height: 130,),
+       
         
-        const Padding(
-          padding: EdgeInsets.only(left: 70),
-          child: Text(
-            "Get-Premium",
-            style: TextStyle(color: Color.fromRGBO(243, 43, 79, 1) , fontSize: 24),
-          ),
-        ),
-        const SizedBox(height: 5),
-        const Center(
-          child: Text(
-            "Make the AD-Free access for yourself\nso you don’t get distract from duty",
-            style: TextStyle(color: color5, fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(height: 50),
-        const Row(
-          children: [
-            SizedBox(width: 70,),
-            Text(
-                "Unlock Premium Features",
-                style: TextStyle(color: color5, fontSize: 16, fontWeight: FontWeight.bold),
+        
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 250,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+            color: const Color.fromARGB(255, 106, 94, 94),
+            ),
+            
+              child: Column(
+                children: [
+                  SizedBox(height: 20,),
+                  Image.asset("assets/premium-service (1) 1.png"),
+                   Text(
+                    "Remove Ads",
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                  SizedBox(height: 10,),
+                  Text(
+                  "    Enjoy an ad-free\n experience for only ",
+                  style: TextStyle(color: Colors.white, fontSize: 19, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 20,),
+                Text(
+                  "\$0.99",
+                  style: TextStyle(color: const Color.fromARGB(255, 228, 210, 49), fontSize: 26, fontWeight: FontWeight.w800),
+                ),
+                ],
               ),
+            
+          ),
+        ),
+        
+        
+          
+            
                SizedBox(width: 20,),
                Text(r"$ 0.9",style: TextStyle(color: color5, fontSize: 16, fontWeight: FontWeight.bold),),
-               
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 70),
-          child: Container(height: 1,color: color2,width: 250,),
-        ),
-        const SizedBox(height: 20,),
 
-        Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(356, 42),
-              backgroundColor: const Color.fromRGBO(243, 43, 79, 1) ,
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+             Row(
+               children: [
+                SizedBox(width: 30,),
+                 ElevatedButton(
+                 style: ElevatedButton.styleFrom(
+                   minimumSize: const Size(356, 42),
+                   backgroundColor: const Color.fromRGBO(243, 43, 79, 1) ,
+                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                   shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(30),
+                   ),
+                 ),
+                 onPressed: () async {
+                   setState(() {
+                     isLoading = true;
+                   });
+                   if (purchaseProvider.products.isNotEmpty) {
+                     await purchaseProvider.buyProduct(purchaseProvider.products[0]);
+                   }
+                   setState(() {
+                     isLoading = false;
+                   });
+                 },
+                 child: isLoading
+                     ? const CircularProgressIndicator(color: Colors.white)
+                     : const Text("Continue", style: TextStyle(color: Colors.white, fontSize: 18)),
+                            ),
+               ],
+             ),
+         
+         const SizedBox(height: 20),
+          Row(
+            children: [
+              SizedBox(width: 60,),
+              Container(
+                width: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(20)
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("No thanks", style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
               ),
-            ),
-            onPressed: () async {
-              setState(() {
-                isLoading = true;
-              });
-              if (purchaseProvider.products.isNotEmpty) {
-                await purchaseProvider.buyProduct(purchaseProvider.products[0]);
-              }
-              setState(() {
-                isLoading = false;
-              });
-            },
-            child: isLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : const Text("Continue", style: TextStyle(color: Colors.white, fontSize: 18)),
+            ],
           ),
-        ),
-        const SizedBox(height: 15),
-        // TextButton(
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        //   child: const Text("No thanks", style: TextStyle(color: Colors.white, fontSize: 16)),
-        // ),
-        TextButton(
-          onPressed: () async {
-            await purchaseProvider.restoreItem();
-          },
-          child: const Padding(
-            padding: EdgeInsets.only(left:120),
-            child: Text("Restore purchase", style: TextStyle(color: Color.fromARGB(255, 153, 39, 39), fontSize: 16)),
-          ),
-        ),
+          SizedBox(height: 20,),
+
+         Row(
+           children: [
+            SizedBox(width: 60) ,            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(20)
+              ),
+              width: 300,
+               child: TextButton(
+                 onPressed: () async {
+                   await purchaseProvider.restoreItem();
+                 },
+
+                   child: Center(child: Text("Restore purchase", style: TextStyle(color: Color.fromARGB(255, 153, 39, 39), fontSize: 16))),
+                 ),
+               ),
+             
+           ],
+         ),
         const SizedBox(height: 20),
-      ],
+       
+      ]     
+      
     ),
-  ),
-);
+  )
+  );
         }
       }
     );

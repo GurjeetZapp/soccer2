@@ -14,21 +14,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "title": "Master the Basics of Soccer",
+      "title": "Domine os fundamentos do futebol",
       "description":
-          "Learn the game with in-depth guides, from dribbling to shooting, and take your skills to the next level.",
+          "Aprenda o jogo com guias detalhados, desde o drible até o arremesso, e leve suas habilidades para o próximo nível.",
       "imagepath": "assets/image1  (1).png",
     },
     {
-      "title": "Track Your Progress",
+      "title": "Acompanhe seu progresso",
       "description":
-          "Set practice sessions, track your stats, and measure improvement with real-time feedback on your performance.",
+          "Defina sessões práticas, acompanhe suas estatísticas e avalie as melhorias com feedback em tempo real sobre seu desempenho.",
       "imagepath": "assets/image1  (1).png",
     },
     {
-      "title": "Elevate Your Game with Personalized Training",
+      "title": "Eleve o seu jogo com treinamento personalizado",
       "description":
-          "Create custom practice routines, tackle various drills, and follow expert tips tailored to your soccer journey.",
+          "Crie rotinas de treino personalizadas, execute vários exercícios e siga dicas de especialistas adaptadas à sua jornada no futebol..",
       "imagepath": "assets/image1  (2).png",
     },
   ];
@@ -73,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(360, 40),
-                  backgroundColor: Color(0xFFFA3C4C),
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -82,8 +82,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onPressed: _nextPage,
                 child: Text(
                   _currentPage == onboardingData.length - 1
-                      ? "Get Started"
-                      : "Next",
+                      ? "Comece"
+                      : "Próximo",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,

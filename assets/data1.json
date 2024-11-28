@@ -1,0 +1,178 @@
+{
+    "dribblingTips": [
+      {
+        "title": "1. Dribbling: Close Control",
+        "subtitle": "Master Your Close Control Skills",
+        "description": "O controle próximo é a capacidade de manter a bola perto dos pés enquanto se movimenta ao redor dos oponentes. É uma habilidade vital para jogadores atacantes em espaços apertados.",
+        "keyTechniques": [
+          "Mantenha a bola perto dos pés usando toques curtos.",
+          "Use o corpo para proteger a bola e impedir que os defensores a roubem.",
+          "Use toques suaves com ambos os pés para ajustar a posição da bola sem perder o ritmo."
+        ],
+        "drills": [
+          "Drible em zigue-zague com cones usando toques rápidos e curtos.",
+          "Pratique driblar com um parceiro que atua como defensor, focando em manter a bola próxima."
+        ],
+        "mistakesToAvoid": [
+          "Não faça muitos toques em espaços apertados; passe ou chute quando necessário.",
+          "Não exponha a bola aos defensores; sempre proteja-a com o corpo."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "2. Dribbling: Under Pressure",
+        "subtitle": "Develop Your Ability to Dribble Under Pressure",
+        "description": "Driblar sob pressão é manter o controle da bola enquanto os oponentes se aproximam. É crucial para decisões rápidas e retenção da bola em situações apertadas.",
+        "keyTechniques": [
+          "Use toques rápidos e leves para manter a bola em movimento e dificultar a vida dos oponentes.",
+          "Mantenha a cabeça erguida para estar ciente dos defensores ao redor.",
+          "Domine a habilidade de driblar com ambos os pés para aumentar a imprevisibilidade."
+        ],
+        "drills": [
+          "Pratique driblar em espaços confinados com obstáculos ou jogadores aplicando pressão leve.",
+          "Exercícios de Rondo: passe e drible em pequenos grupos sob pressão de defensores."
+        ],
+        "mistakesToAvoid": [
+          "Não entre em pânico sob pressão; mantenha a calma e a compostura.",
+          "Não ignore a visão periférica; sempre verifique os desafios e espaços abertos."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "3. Dribbling: Speed Dribbling",
+        "subtitle": "Boost Your Dribbling Speed",
+        "description": "O drible em velocidade é a capacidade de mover a bola rapidamente enquanto mantém o controle, permitindo que os jogadores se afastem dos defensores ou explorem espaços abertos.",
+        "keyTechniques": [
+          "Empurre a bola com o topo do pé (cadastro) para velocidade controlada.",
+          "Mantenha a cabeça erguida para ajustar a velocidade de acordo com a distância dos defensores.",
+          "Use toques maiores em espaços abertos para cobrir terreno rapidamente."
+        ],
+        "drills": [
+          "Exercícios de sprint e drible: alterne entre sprintar e driblar através de cones.",
+          "Exercícios de perseguição: pratique driblar fugindo de um defensor que está te perseguindo."
+        ],
+        "mistakesToAvoid": [
+          "Não perca o controle em alta velocidade; pratique manter o controle.",
+          "Não dependa de apenas um pé; ajuste a bola com ambos os pés enquanto dribla em velocidade."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "4. Dribbling: Ball Handling in Tight Spaces",
+        "subtitle": "Master Ball Control in Confined Areas",
+        "description": "O controle da bola em espaços apertados refere-se a manter a posse em áreas congestionadas, onde movimentos rápidos e decisões são essenciais.",
+        "keyTechniques": [
+          "Use toques pequenos e frequentes para manter a bola próxima.",
+          "Use fintas corporais para enganar os oponentes e criar espaço.",
+          "Giros de 360°: gire rapidamente usando o interior e o exterior do pé para mudar de direção."
+        ],
+        "drills": [
+          "Drible em zigue-zague com cones usando toques pequenos.",
+          "Jogos de Rondo: controle de bola em pequenos grupos enquanto defensores tentam ganhar a bola."
+        ],
+        "mistakesToAvoid": [
+          "Não perca a compostura em áreas apertadas para evitar decisões apressadas.",
+          "Não faça toques demais; saiba quando passar, driblar ou chutar."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "5. Dribbling: Shielding the Ball",
+        "subtitle": "Protect the Ball from Opponents",
+        "description": "Proteger a bola envolve usar o corpo para mantê-la longe dos oponentes, dando tempo para fazer um passe ou se movimentar.",
+        "keyTechniques": [
+          "Posição lateral: posicione o corpo entre o defensor e a bola.",
+          "Centro de gravidade baixo: flexione levemente os joelhos para dificultar que os oponentes te empurrem.",
+          "Uso dos braços: use os braços (sem fazer falta) para manter o defensor afastado."
+        ],
+        "drills": [
+          "Exercícios de proteção 1v1: pratique proteger a bola enquanto procura opções de passe.",
+          "Exercícios de costas para o gol: receba a bola de costas para o gol e proteja-a antes de girar."
+        ],
+        "mistakesToAvoid": [
+          "Não use uma posição corporal fraca; use uma postura forte para proteger a bola.",
+          "Não dependa muito dos braços; use mais o corpo para evitar faltas."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "6. Dribbling: One-on-One Dribbling",
+        "subtitle": "Beat Defenders in One-on-One Situations",
+        "description": "O drible 1v1 é a habilidade de enfrentar e vencer um defensor em um duelo frente a frente, usando habilidades e decisões rápidas.",
+        "keyTechniques": [
+          "Espere pelo momento certo: espere o defensor se comprometer antes de fazer seu movimento.",
+          "Use fintas: use fintas corporais e jogo de pés para enganar o defensor.",
+          "Acelere após vencer o defensor: uma vez que você o ultrapassou, acelere para criar separação."
+        ],
+        "drills": [
+          "Exercícios de ataque 1v1: pratique enfrentar um defensor em um espaço confinado.",
+          "Exercícios de finta e arranque: pratique fintas para ultrapassar um defensor estático e, em seguida, corra para o espaço."
+        ],
+        "mistakesToAvoid": [
+          "Não seja previsível; use uma variedade de movimentos para confundir o defensor.",
+          "Não esqueça de acelerar após vencer o defensor."
+        ],
+        "cta": "Start Practice"
+      }
+    ],
+    "shootingTips": [
+      {
+        "title": "1. Shooting: Power Shots",
+        "subtitle": "Learn to Strike the Ball with Power",
+        "description": "Um chute potente envolve golpear a bola com força máxima para aumentar a velocidade e a distância do chute. É usado para surpreender o goleiro com velocidade.",
+        "keyTechniques": [
+          "Use o peito do pé (cadastro) para golpear a bola com força máxima.",
+          "Plante o pé de apoio firmemente ao lado da bola para estabilidade e equilíbrio.",
+          "Faça um bom follow-through após o chute para adicionar mais potência."
+        ],
+        "drills": [
+          "Chutes de longa distância: pratique chutes de fora da área para gerar potência.",
+          "Finalização de um toque: pratique chutar de primeira após receber um passe, focando em golpes potentes."
+        ],
+        "mistakesToAvoid": [
+          "Não incline o corpo muito para trás, pois isso pode fazer a bola passar por cima do gol.",
+          "Certifique-se de golpear a parte central ou inferior da bola para maior potência."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "2. Shooting: Finesse Shots",
+        "subtitle": "Master the Art of Curved, Placed Shots",
+        "description": "Um chute de precisão usa curva em vez de potência para vencer o goleiro, geralmente mirando no canto oposto ou nas extremidades.",
+        "keyTechniques": [
+          "Use a parte interna do pé para adicionar efeito à bola.",
+          "Mire no canto mais distante, longe do alcance do goleiro.",
+          "Certifique-se de seguir a curva do chute com o movimento do corpo."
+        ],
+        "drills": [
+          "Chutes curvos em torno de obstáculos: coloque cones para simular defensores e pratique chutes curvos no gol.",
+          "Exercício de alvo nos cantos: coloque pequenos alvos nos cantos do gol e pratique acertar esses pontos com chutes precisos."
+        ],
+        "mistakesToAvoid": [
+          "Não complique demais o chute; foco na técnica, não na força.",
+          "Evite aplicar rotação excessiva ou insuficiente; encontre o equilíbrio certo para enganar o goleiro."
+        ],
+        "cta": "Start Practice"
+      },
+      {
+        "title": "3. Shooting: Chip Shots",
+        "subtitle": "Learn to Chip the Ball Over the Goalkeeper",
+        "description": "O chip shot é uma técnica usada para elevar a bola suavemente sobre o goleiro quando ele está saindo ou se posicionando de maneira errada.",
+        "keyTechniques": [
+          "Use a parte inferior do pé para levantar a bola com precisão.",
+          "Dê um toque sutil para não exagerar na altura do chip.",
+          "Mire no espaço acima do goleiro e certifique-se de controlar a altura e a distância."
+        ],
+        "drills": [
+          "Pratique chips curtos: trabalhe em chips curtos para a baliza com o goleiro fora de posição.",
+          "Chip contra goleiro: em situações de 1v1 com goleiro, pratique o chip quando ele avançar."
+        ],
+        "mistakesToAvoid": [
+          "Não aplique muita força, pois isso pode fazer com que a bola passe por cima.",
+          "Não seja previsível; mude a intensidade do chip dependendo da situação."
+        ],
+        "cta": "Start Practice"
+      }
+    ]
+  }
+  

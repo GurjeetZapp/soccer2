@@ -5,23 +5,26 @@ import 'package:soccer/Auth/provider.dart';
 
 import 'package:soccer/firebase_options.dart';
 import 'package:soccer/provider/inappropriate.dart';
+import 'package:soccer/provider1.dart';
 import 'package:soccer/screen/onboarding/splashscreen.dart';
 
 void main() async{
-   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initializing Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+ WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     MultiProvider(
       providers: [
+
         // Adding PurchaseProvider
         ChangeNotifierProvider<PurchaseProvider>(
           lazy: false,
           create: (context) => PurchaseProvider(),
         ),
+         ChangeNotifierProvider(
+      create: (context) => SkipStatusProvider(),
+      child: MyApp(),
+    ),
+  
         // Adding SignupProvider
         ChangeNotifierProvider(create: (_) => SignupProvider()),
       ],

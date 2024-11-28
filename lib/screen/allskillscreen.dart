@@ -1,395 +1,19 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:soccer/Auth/log_in.dart';
-import 'package:soccer/Auth/provider.dart';
-import 'package:soccer/appconstant.dart';
-import 'package:soccer/apputils/appcolor.dart';
-
-import 'package:soccer/provider/inapppurcahse.dart';
-import 'package:soccer/provider/inappropriate.dart';
-import 'package:soccer/screen/allskillscreen.dart';
-import 'package:soccer/screen/bottomnavbar/Myprofile.dart';
-import 'package:soccer/screen/bottomnavbar/practicsescreen.dart';
 import 'package:soccer/screen/skilldatascreen.dart';
-import 'package:soccer/screen/soccer1.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:soccer/screen/tipscreen.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:uuid/uuid.dart';
-class MainScreen extends StatefulWidget {
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
 
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+class AllSkillsScreen extends StatelessWidget {
+  final String selectedSkill;
 
-  // List of screens to navigate between
-  final List<Widget> _screens = [
-    HomeScreen(),
-    PractiseScreen(),
-    MyStatisticsScreen(),
-    ProfileScreen(),
-  ];
+  AllSkillsScreen({required this.selectedSkill});
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF7C0C11), Color(0xFF9E181D)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30), // Circular border at top-left
-            topRight: Radius.circular(30), // Circular border at top-right
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, -2),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: onTabTapped,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent, // Keep transparent for gradient
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white70,
-            elevation: 0, // Remove default elevation
-            items: [
-              BottomNavigationBarItem(
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == 0 ? Colors.white24 : Colors.transparent,
-                  ),
-                  padding: EdgeInsets.all(8),
-                  child: Image.network(
-                    "${AppConstant.awsBaseUrl}/403/Vector.png",
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                label: 'Lar',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == 1 ? Colors.white24 : Colors.transparent,
-                  ),
-                  padding: EdgeInsets.all(8),
-                  child: Image.network(
-                    "${AppConstant.awsBaseUrl}/403/calendar-day 1.png",
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                label: 'Prática',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == 2 ? Colors.white24 : Colors.transparent,
-                  ),
-                  padding: EdgeInsets.all(8),
-                  child: Image.network(
-                    "${AppConstant.awsBaseUrl}/403/chart-pie-alt 1.png",
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                label: 'Estatística',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == 3 ? Colors.white24 : Colors.transparent,
-                  ),
-                  padding: EdgeInsets.all(8),
-                  child: Image.network(
-                    "${AppConstant.awsBaseUrl}/403/user (3) 1.png",
-                    height: 24,
-                    width: 24,
-                  ),
-                ),
-                label: 'Minha conta',
-              ),
-            ],
-            selectedLabelStyle: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-            unselectedLabelStyle: TextStyle(
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatefulWidget {
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-String? selectedSkill = 'Drible'; 
- String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-   final FirebaseFirestore _firestore = FirebaseFirestore.instance; 
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-     String? _currentUserId;
-  bool isNOTValidUser = FirebaseAuth.instance.currentUser == null;
-    // To store the selected skill type
- final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-   String? userId;
-  String username = '';
-  String email = '';
-  String phoneNumber = '';
-  String? firebaseImageUrl;
-  bool isGuestUser = false;
-
-  
-
-   @override
-  void initState() {
-    super.initState();
-    _getCurrentUserId();
-    _currentUserId = _auth.currentUser?.uid;
-    _getCurrentUserId();
-    _initializeUser();
-   // Get the current user's ID
-  }
-   Future<void> _getCurrentUserId() async {
-    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    setState(() {
-      currentUserId = userId;
-    });
-  }
-   void showRateDialog(BuildContext context) {
-    double rating = 0;
-
-    // Replace with your app's Play Store URL
-    final String playStoreUrl =
-        'https://play.google.com/store/apps/details?id=your.app.package.name';
-
-    Future<void> _launchPlayStore() async {
-      if (await canLaunch(playStoreUrl)) {
-        await launch(playStoreUrl);
-      } else {
-        throw 'Could not launch $playStoreUrl';
-      }
-    }
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Avalie nosso aplicativo'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Avalie sua experiência:'),
-              SizedBox(height: 10),
-              RatingBar.builder(
-                initialRating: rating,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemSize: 40.0,
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-                onRatingUpdate: (newRating) {
-                  rating = newRating;
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                print('Rating: $rating');
-                _launchPlayStore();
-                Navigator.of(context).pop();
-              },
-              child: Text('Enviar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-   Future<void> showDeleteConfirmationDialog(BuildContext context,
-      {required VoidCallback onDelete}) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirmar exclusão"),
-          content: Text(
-              "Aem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
-              },
-              child: Text("Cancelar"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(); // Dismiss the dialog before deleting
-                onDelete(); // Execute delete action
-              },
-              child: Text("Excluir"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> showYesNoAlertDialog(BuildContext context,
-      {required String confirmMessage,
-      required VoidCallback onYesClicked}) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirmation"),
-          content: Text(confirmMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
-              },
-              child: Text("No"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
-                onYesClicked(); // Execute Yes action
-              },
-              child: Text("Yes"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void onTapped(
-      int i, BuildContext context, PurchaseProvider purchaseProvider) async {
-    switch (i) {
-      // case 0:
-      //   navigatePopContext(context);
-      //   navigateWithTransitionToScreen(context, InAppPurchasePage());
-      //   break;
-      case 0:
-        if (isNOTValidUser) {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          return;
-        }
-        showDeleteConfirmationDialog(context, onDelete: () async {
-          try {
-            final FirebaseAuth auth = FirebaseAuth.instance;
-            User? user = auth.currentUser;
-            if (user != null) {
-              print("username ${user.email}");
-              print("username state ${user.email}");
-              try {
-                await user.delete();
-              } catch (e) {
-                print("username delete err $e ");
-              }
-              print("username state after ${user.email}");
-            }
-            Navigator.pop(context);
-            // _clearAllCache();
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          } catch (e) {
-            Navigator.pop(context);
-          }
-        });
-        break;
-      case 1:
-        if (isNOTValidUser) {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          return;
-        }
-        await showYesNoAlertDialog(context,
-            confirmMessage: "Do you really want to sign out?",
-            onYesClicked: () async {
-          await FirebaseAuth.instance.signOut();
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        });
-        break;
-      case 2:
-        if (isNOTValidUser) {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-          return;
-        }
-        break;
-      default:
-    }
-  }
-
-  // Map to store the skills for each skill type
   // Map to store the skills for each skill type
   final Map<String, List<Map<String, dynamic>>> skillData = {
    'Drible': [
   {
     'name': 'Fechar controle',
-    "image": "/403/371 tips Images/Dribbling tips/1.webp",
+    "image": "assets/1.webp",
     'data': {
       "title": "1. Drible: Controle Próximo",
-       "image": "/403/371 tips Images/Dribbling tips/1.webp",
       "subtitle": "Domine suas habilidades de controle próximo",
       "description": "O controle próximo é a capacidade de manter a bola perto dos pés enquanto se movimenta ao redor dos oponentes. É uma habilidade vital para jogadores atacantes em espaços apertados.",
       "keyTechniques": [
@@ -410,7 +34,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Drible sob pressão',
-    "image": "/403/371 tips Images/Dribbling tips/2.webp",
+    "image": "assets/2.webp",
     'data': {
       "title": "2. Drible: Sob Pressão",
       "subtitle": "Desenvolva sua habilidade de driblar sob pressão",
@@ -433,7 +57,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Drible de velocidade',
-    "image": "/403/371 tips Images/Dribbling tips/3.webp",
+    "image": "assets/3.webp",
     'data': {
       "title": "3. Drible: Velocidade",
       "subtitle": "Aumente sua velocidade de drible",
@@ -456,7 +80,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Manuseamento de bola em espaços apertados',
-    "image": "/403/371 tips Images/Dribbling tips/4.webp",
+    "image": "assets/4.webp",
     'data': {
       "title": "4. Drible: Controle em Espaços Apertados",
       "subtitle": "Domine o controle da bola em áreas confinadas",
@@ -479,7 +103,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Protegendo a bola',
-    "image": "/403/371 tips Images/Dribbling tips/5.webp",
+    "image": "assets/5.webp",
     'data': {
       "title": "5. Drible: Protegendo a Bola",
       "subtitle": "Proteja a bola dos oponentes",
@@ -502,7 +126,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Dribles um contra um',
-    "image": "/403/371 tips Images/Dribbling tips/6.webp",
+    "image": "assets/2.webp",
     'data': {
       "title": "6. Drible: Um Contra Um",
       "subtitle": "Supere os defensores em situações um contra um",
@@ -524,11 +148,10 @@ String? selectedSkill = 'Drible';
     }
   }
 ],
-
 'Passagem': [
   {
     'name': 'Passes Curtos', 
-    'image': "/403/371 tips Images/Passing Tips section/1.webp",
+    'image': "assets/photo1.webp",
     'data': {
       "title": "1. Passe: Passes Curtos",
       "subtitle": "Domine a Arte do Passe Curto Preciso",
@@ -551,7 +174,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Passes Longos', 
-    'image': '/403/371 tips Images/Passing Tips section/2.webp',
+    'image': 'assets/photo2.webp',
     'data': {
       "title": "2. Passe: Passes Longos",
       "subtitle": "Aprenda a Realizar Passes Longos Precisos",
@@ -574,7 +197,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Cruzamento da Bola', 
-    'image': '/403/371 tips Images/Passing Tips section/3.webp',
+    'image': 'assets/photo3.webp',
     'data': {
       "title": "3. Passe: Cruzamento da Bola",
       "subtitle": "Aprenda a Fazer o Cruzamento Perfeito",
@@ -597,7 +220,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Bolas em Profundidade', 
-    'image': '/403/371 tips Images/Passing Tips section/4.webp',
+    'image': 'assets/photo4.webp',
     'data': {
       "title": "4. Passe: Bolas em Profundidade",
       "subtitle": "Aprenda a Jogar Bolas em Profundidade",
@@ -620,7 +243,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Passe de Primeira', 
-    'image': '/403/371 tips Images/Passing Tips section/5.webp',
+    'image': 'assets/photo6.webp',
     'data': {
       "title": "5. Passe: Passe de Primeira",
       "subtitle": "Domine Passes Rápidos e Fluídos",
@@ -643,7 +266,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Mudança de Jogo', 
-    'image': '/403/371 tips Images/Passing Tips section/6.webp',
+    'image': 'assets/photo7.webp',
     'data': {
       "title": "6. Passe: Mudança de Jogo",
       "subtitle": "Aprenda a Mudar o Jogo Eficazmente",
@@ -666,7 +289,7 @@ String? selectedSkill = 'Drible';
   }
 ],
 'Dicas de tiro': [
-  {'name': 'Chutes Potentes', 'image': '/403/371 tips Images/shooting/1.webp','data':{  
+  {'name': 'Chutes Potentes', 'image': 'assets/Frame 427324535.png','data':{  
     "title": "1. Chutes: Chutes Potentes",
     "subtitle": "Aprenda a Chutar a Bola com Potência",
     "description": "Um chute potente envolve golpear a bola com força máxima para aumentar a velocidade e a distância do chute. É usado para surpreender o goleiro com velocidade.",
@@ -685,7 +308,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Chutes Colocados', 'image': '/403/371 tips Images/shooting/2.webp','data':{ 
+  {'name': 'Chutes Colocados', 'image': 'assets/Frame 427324535.png','data':{ 
     "title": "2. Chutes: Chutes Colocados",
     "subtitle": "Domine a Arte dos Chutes Curvados e Precisos",
     "description": "Um chute colocado usa curva em vez de potência para vencer o goleiro, geralmente mirando no canto oposto ou nas extremidades.",
@@ -704,7 +327,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Chutes por Cavadinha', 'image': '/403/371 tips Images/shooting/3.webp','data':{
+  {'name': 'Chutes por Cavadinha', 'image': 'assets/Frame 427324535.png','data':{
     "title": "3. Chutes: Cavadinha",
     "subtitle": "Aprenda a Cobrir a Bola sobre o Goleiro",
     "description": "Um chute por cobertura envolve levantar a bola sobre o goleiro ou defensor usando um toque delicado, geralmente quando o goleiro está adiantado.",
@@ -723,7 +346,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Chutes de Voleio', 'image': '/403/371 tips Images/shooting/4.webp','data':{
+  {'name': 'Chutes de Voleio', 'image': 'assets/Frame 427324535.png','data':{
     "title": "4. Chutes: Voleios",
     "subtitle": "Domine a Arte de Chutar a Bola no Ar",
     "description": "Um chute de voleio envolve golpear a bola enquanto ela está no ar antes de tocar o chão, normalmente após um cruzamento ou rebote.",
@@ -742,7 +365,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Chutes de Longa Distância', 'image': '/403/371 tips Images/shooting/5.webp','data':{
+  {'name': 'Chutes de Longa Distância', 'image': 'assets/Frame 427324535.png','data':{
     "title": "5. Chutes: Longa Distância",
     "subtitle": "Chute de Distância com Potência e Precisão",
     "description": "Chutes de longa distância são tentativas de gol de fora da área, exigindo tanto potência quanto precisão para vencer o goleiro.",
@@ -761,7 +384,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Cobranças de Falta', 'image': '/403/371 tips Images/shooting/6.webp','data':{
+  {'name': 'Cobranças de Falta', 'image': 'assets/Frame 427324535.png','data':{
     "title": "6. Chutes: Cobranças de Falta",
     "subtitle": "Domine a Arte das Cobranças Diretas",
     "description": "Uma cobrança de falta direta é uma oportunidade de marcar após uma falta, onde o jogador pode chutar diretamente para o gol.",
@@ -785,7 +408,7 @@ String? selectedSkill = 'Drible';
 'Defesa': [
   {
     'name': 'Desarme', 
-    'image': '/403/371 tips Images/Defending Tips/1.webp', 
+    'image': 'assets/Frame 427324535.png', 
     'data': {
       "title": "2. Defendendo: Contenção",
       "subtitle": "Controle o Espaço, Force os Adversários para Longe",
@@ -808,7 +431,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Marcação', 
-    'image': '/403/371 tips Images/Defending Tips/2.webp', 
+    'image': 'assets/Frame 427324535.png', 
     'data': {
       "title": "3. Defendendo: Marcação e Posicionamento",
       "subtitle": "Aprenda a Controlar os Adversários",
@@ -831,7 +454,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': 'Bloqueio de Chutes', 
-    'image': '/403/371 tips Images/Defending Tips/3.webp', 
+    'image': 'assets/Frame 427324535.png', 
     'data': {
       "title": "4. Defendendo: Interceptações",
       "subtitle": "Corte Passes e Crie Recuperações",
@@ -854,7 +477,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': "Bloqueio de Chutes",
-    'image': "/403/371 tips Images/Defending Tips/4.webp",
+    'image': "",
     'data': {
       "title": "5. Defendendo: Bloqueio de Chutes",
       "subtitle": "Impeça os Adversários de Finalizarem",
@@ -877,7 +500,7 @@ String? selectedSkill = 'Drible';
   },
   {
     'name': "Defesa 1v1",
-    'image': "/403/371 tips Images/Defending Tips/5.webp",
+    'image': "",
     'data': {
       "title": "6. Defendendo: Defesa 1v1",
       "subtitle": "Domine a Defesa Individual",
@@ -902,7 +525,7 @@ String? selectedSkill = 'Drible';
 "Goleiro": [
   {
     "name": "Defesa de Tiros",
-    "image": "/403/371 tips Images/goalkeeping Tips/1.webp",
+    "image": "assets/Frame 427324535.png",
     "data": {
       "title": "1. Defesa de Goleiro: Parada de Chutes",
       "subtitle": "Domine o Básico de Parar Chutes",
@@ -925,7 +548,7 @@ String? selectedSkill = 'Drible';
   },
   {
     "name": "Agarra",
-    "image": "/403/371 tips Images/goalkeeping Tips/2.webp",
+    "image": "assets/Frame 427324535.png",
     "data": {
       "title": "2. Defesa de Goleiro: Posicionamento",
       "subtitle": "Aprenda a Estar no Lugar Certo na Hora Certa",
@@ -948,7 +571,7 @@ String? selectedSkill = 'Drible';
   },
   {
     "name": "Socando",
-    "image": "/403/371 tips Images/goalkeeping Tips/3.webp",
+    "image": "assets/Frame 427324535.png",
     "data": {
       "title": "4. Defesa de Goleiro: Distribuição da Bola",
       "subtitle": "Aprenda a Começar o Ataque com Boa Distribuição",
@@ -971,7 +594,7 @@ String? selectedSkill = 'Drible';
   },
   {
     "name": "Técnica de Mergulho",
-    "image": "/403/371 tips Images/goalkeeping Tips/4.webp",
+    "image": "assets/Frame 427324535.png",
     "data": {
       "title": "6. Defesa de Goleiro: Técnica de Mergulho",
       "subtitle": "Aperfeiçoe Suas Defesas em Mergulho",
@@ -994,7 +617,7 @@ String? selectedSkill = 'Drible';
   },
   {
     "name": "Defesas de Pênalti",
-    "image": "/403/371 tips Images/goalkeeping Tips/5.webp",
+    "image": "assets/Frame 427324535.png",
     "data": {
       "title": "5. Defesa de Goleiro: Salvar Pênaltis",
       "subtitle": "Aprenda as Técnicas para Salvar Pênaltis",
@@ -1018,7 +641,7 @@ String? selectedSkill = 'Drible';
 ],
 
 'conjunto de peças': [
-  {'name': 'Cantos Atacantes', 'image': '/403/371 tips Images/Set pieces/1.webp','data': {
+  {'name': 'Cantos Atacantes', 'image': 'assets/Frame 427324535.png','data': {
     "title": "1. Jogadas Ensaiadas: Escanteios Ofensivos",
     "subtitle": "Domine a Arte de Atacar com Escanteios",
     "description": "Um escanteio ofensivo é uma jogada ensaiada onde a equipe ofensiva entrega a bola na área de pênalti a partir do canto do campo, visando marcar um gol.",
@@ -1037,7 +660,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Cantos Defensivos', 'image': '/403/371 tips Images/Set pieces/2.webp','data':  {
+  {'name': 'Cantos Defensivos', 'image': 'assets/Frame 427324535.png','data':  {
     "title": "2. Jogadas Ensaiadas: Escanteios Defensivos",
     "subtitle": "Aprenda a Defender Contra Escanteios Perigosos",
     "description": "Defender escanteios envolve organizar a defesa para evitar que a equipe adversária marque, geralmente marcando jogadores e afastando a bola da zona de perigo.",
@@ -1056,7 +679,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Faltas Diretas', 'image': '/403/371 tips Images/Set pieces/3.webp','data':{
+  {'name': 'Faltas Diretas', 'image': 'assets/Frame 427324535.png','data':{
     "title": "3. Jogadas Ensaiadas: Faltas Diretas",
     "subtitle": "Aperfeiçoe a Habilidade de Marcar em Faltas Diretas",
     "description": "Um tiro livre direto é uma jogada onde o jogador pode marcar diretamente do chute sem a necessidade da bola tocar outro jogador.",
@@ -1075,7 +698,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Execução de Lançamentos', 'image': '/403/371 tips Images/Set pieces/4.webp','data':{
+  {'name': 'Execução de Lançamentos', 'image': 'assets/Frame 427324535.png','data':{
     "title": "4. Jogadas Ensaiadas: Faltas Indiretas",
     "subtitle": "Aprenda a Utilizar Faltas Indiretas de Forma Eficaz",
     "description": "Um tiro livre indireto é concedido por faltas menos graves, onde a bola deve tocar outro jogador antes de resultar em gol.",
@@ -1094,7 +717,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Arremessos Laterais', 'image': '/403/371 tips Images/Set pieces/5.webp','data': {
+  {'name': 'Arremessos Laterais', 'image': 'assets/Frame 427324535.png','data': {
     "title": "5. Jogadas Ensaiadas: Arremessos Laterais",
     "subtitle": "Domine a Técnica de Realizar Arremessos Laterais Eficazes",
     "description": "Um arremesso lateral é concedido quando a bola cruza a linha lateral, permitindo que a equipe que não tocou por último recomece o jogo.",
@@ -1113,7 +736,7 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-  {'name': 'Pênaltis', 'image': '/403/371 tips Images/Set pieces/6.webp','data': {
+  {'name': 'Pênaltis', 'image': 'assets/Frame 427324535.png','data': {
     "title": "6. Jogadas Ensaiadas: Cobrança de Pênaltis",
     "subtitle": "Aprenda a Cobrar Pênaltis com Calma e Composição",
     "description": "Um pênalti é concedido após uma falta na área de pênalti. A bola é colocada no ponto de pênalti, e o cobrador deve chutar a 12 metros com apenas o goleiro para defender.",
@@ -1132,541 +755,277 @@ String? selectedSkill = 'Drible';
     ],
     "cta": "Comece a Praticar"
   }},
-],
+]
 
   };
+
+
+//   final List<Map<String, dynamic>> skills = [
+
+//   {
+//       "title": "2. Shooting: Finesse Shots",
+//       "subtitle": "Master the Art of Curved, Placed Shots",
+//       "description":
+//           "Um chute de precisão usa curva em vez de potência para vencer o goleiro, geralmente mirando no canto oposto ou nas extremidades.",
+//       "keyTechniques": [
+//         "Use a parte interna do pé para adicionar efeito à bola.",
+//         "Mire no canto mais distante, longe do alcance do goleiro.",
+//         "Certifique-se de seguir a curva do chute com o movimento do corpo."
+//       ],
+//       "drills": [
+//         "Chutes curvos em torno de obstáculos: coloque cones para simular defensores e pratique chutes curvos no gol.",
+//         "Exercício de alvo nos cantos: coloque pequenos alvos nos cantos do gol e pratique acertar esses pontos com chutes precisos."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não complique demais o chute; foco na técnica, não na força.",
+//         "Evite aplicar rotação excessiva ou insuficiente; encontre o equilíbrio certo para enganar o goleiro."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "3. Shooting: Chip Shots",
+//       "subtitle": "Learn to Chip the Ball Over the Goalkeeper",
+//       "description":
+//           "Um chute por cobertura envolve levantar a bola sobre o goleiro ou defensor usando um toque delicado, geralmente quando o goleiro está adiantado.",
+//       "keyTechniques": [
+//         "Faça contato suave na parte inferior da bola para levantá-la sobre o goleiro.",
+//         "Use a ponta do pé ou o peito do pé para levantar a bola de forma controlada.",
+//         "Avalie a posição do goleiro antes de realizar o chute por cobertura."
+//       ],
+//       "drills": [
+//         "Exercício de cobertura 1v1: pratique cobrir o goleiro que avança em sua direção.",
+//         "Coberturas à distância: pratique chutes por cobertura de várias distâncias mirando em áreas pequenas no gol."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não use muita força; chutes por cobertura exigem toque suave.",
+//         "Certifique-se de levantar a bola o suficiente para passar por cima do goleiro."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "4. Shooting: Volley Shots",
+//       "subtitle": "Master the Art of Striking the Ball in the Air",
+//       "description":
+//           "Um chute de voleio envolve golpear a bola enquanto ela está no ar antes de tocar o chão, normalmente após um cruzamento ou rebote.",
+//       "keyTechniques": [
+//         "Mantenha os olhos na bola para cronometrar o chute no momento certo.",
+//         "Use o peito do pé ou a parte interna para chutar com potência.",
+//         "Mantenha o equilíbrio e o corpo levemente inclinado para controlar a direção e a força do chute."
+//       ],
+//       "drills": [
+//         "Exercício de cruzamento e voleio: pratique receber cruzamentos e chutar a bola no ar.",
+//         "Exercício de rebote de voleio: pratique chutar a bola após rebotes na trave ou no poste."
+//       ],
+//       "mistakesToAvoid": [
+//         "Erros de tempo: um voleio depende de um bom timing. Pratique o tempo certo.",
+//         "Inclinar-se demais para trás pode fazer a bola ir por cima do gol. Mantenha o corpo levemente inclinado para frente."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "5. Shooting: Long-Range Shots",
+//       "subtitle": "Strike from Distance with Power and Precision",
+//       "description":
+//           "Chutes de longa distância são tentativas de gol de fora da área, exigindo tanto potência quanto precisão para vencer o goleiro.",
+//       "keyTechniques": [
+//         "Use o peito do pé para gerar mais força.",
+//         "Mire em chutes baixos e fortes nos cantos do gol para dificultar a defesa do goleiro.",
+//         "Certifique-se de um follow-through forte para maximizar a distância e precisão."
+//       ],
+//       "drills": [
+//         "Exercício de chute à distância: pratique chutes de fora da área mirando diferentes pontos do gol.",
+//         "Chutes de longa distância de primeira: receba passes e chute de primeira de fora da área."
+//       ],
+//       "mistakesToAvoid": [
+//         "Falta de follow-through pode resultar em chutes fracos ou imprecisos.",
+//         "Sempre leia a posição do goleiro antes de chutar para explorar quaisquer brechas."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "6. Shooting: Free Kicks",
+//       "subtitle": "Master the Art of Taking Direct Free Kicks",
+//       "description":
+//           "Um tiro livre direto é uma oportunidade de marcar após uma falta, onde o jogador pode chutar diretamente para o gol.",
+//       "keyTechniques": [
+//         "Posicione a bola corretamente para um chute limpo.",
+//         "Use a parte interna ou o peito do pé para controle ou potência.",
+//         "Adicione efeito ajustando a posição do pé para curvar a bola ao redor da barreira."
+//       ],
+//       "drills": [
+//         "Exercício de falta com barreira: monte uma barreira e pratique chutes curvos no gol.",
+//         "Prática de alvo: coloque alvos no gol e pratique acertar esses pontos com chutes de falta."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não apresse o chute; tome seu tempo para se concentrar antes de chutar.",
+//         "Certifique-se de um follow-through completo para adicionar efeito ou potência ao chute."
+//       ],
+//       "cta": "Start Practice"
+//     },
   
+//     {
+//       "title": "3. Dribbling: Speed Dribbling",
+//       "subtitle": "Boost Your Dribbling Speed",
+//       "description":
+//           "O drible em velocidade é a capacidade de mover a bola rapidamente enquanto mantém o controle, permitindo que os jogadores se afastem dos defensores ou explorem espaços abertos.",
+//       "keyTechniques": [
+//         "Empurre a bola com o topo do pé (cadastro) para velocidade controlada.",
+//         "Mantenha a cabeça erguida para ajustar a velocidade de acordo com a distância dos defensores.",
+//         "Use toques maiores em espaços abertos para cobrir terreno rapidamente."
+//       ],
+//       "drills": [
+//         "Exercícios de sprint e drible: alterne entre sprintar e driblar através de cones.",
+//         "Exercícios de perseguição: pratique driblar fugindo de um defensor que está te perseguindo."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não perca o controle em alta velocidade; pratique manter o controle.",
+//         "Não dependa de apenas um pé; ajuste a bola com ambos os pés enquanto dribla em velocidade."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "4. Dribbling: Ball Handling in Tight Spaces",
+//       "subtitle": "Master Ball Control in Confined Areas",
+//       "description":
+//           "O controle da bola em espaços apertados refere-se a manter a posse em áreas congestionadas, onde movimentos rápidos e decisões são essenciais.",
+//       "keyTechniques": [
+//         "Use toques pequenos e frequentes para manter a bola próxima.",
+//         "Use fintas corporais para enganar os oponentes e criar espaço.",
+//         "Giros de 360°: gire rapidamente usando o interior e o exterior do pé para mudar de direção."
+//       ],
+//       "drills": [
+//         "Drible em zigue-zague com cones usando toques pequenos.",
+//         "Jogos de Rondo: controle de bola em pequenos grupos enquanto defensores tentam ganhar a bola."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não perca a compostura em áreas apertadas para evitar decisões apressadas.",
+//         "Não faça toques demais; saiba quando passar, driblar ou chutar."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "5. Dribbling: Shielding the Ball",
+//       "subtitle": "Protect the Ball from Opponents",
+//       "description":
+//           "Proteger a bola envolve usar o corpo para mantê-la longe dos oponentes, dando tempo para fazer um passe ou se movimentar.",
+//       "keyTechniques": [
+//         "Posição lateral: posicione o corpo entre o defensor e a bola.",
+//         "Centro de gravidade baixo: flexione levemente os joelhos para dificultar que os oponentes te empurrem.",
+//         "Uso dos braços: use os braços (sem fazer falta) para manter o defensor afastado."
+//       ],
+//       "drills": [
+//         "Exercícios de proteção 1v1: pratique proteger a bola enquanto procura opções de passe.",
+//         "Exercícios de costas para o gol: receba a bola de costas para o gol e proteja-a antes de girar."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não use uma posição corporal fraca; use uma postura forte para proteger a bola.",
+//         "Não dependa muito dos braços; use mais o corpo para evitar faltas."
+//       ],
+//       "cta": "Start Practice"
+//     },
+//     {
+//       "title": "6. Dribbling: One-on-One Dribbling",
+//       "subtitle": "Beat Defenders in One-on-One Situations",
+//       "description":
+//           "O drible 1v1 é a habilidade de enfrentar e vencer um defensor em um duelo frente a frente, usando habilidades e decisões rápidas.",
+//       "keyTechniques": [
+//         "Espere pelo momento certo: espere o defensor se comprometer antes de fazer seu movimento.",
+//         "Use fintas: use fintas corporais e jogo de pés para enganar o defensor.",
+//         "Acelere após vencer o defensor: uma vez que você o ultrapassou, acelere para criar separação."
+//       ],
+//       "drills": [
+//         "Exercícios de ataque 1v1: pratique enfrentar um defensor em um espaço confinado.",
+//         "Exercícios de finta e arranque: pratique fintas para ultrapassar um defensor estático e, em seguida, corra para o espaço."
+//       ],
+//       "mistakesToAvoid": [
+//         "Não seja previsível; use uma variedade de movimentos para confundir o defensor.",
+//         "Não esqueça de acelerar após vencer o defensor."
+//       ],
+//       "cta": "Start Practice"
+//     }, // Shooting Tips Data
 
-  Future<void> _initializeUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
+//  ];
 
-    if (user == null) {
-      isGuestUser = true;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      userId = prefs.getString('guestUserId') ?? Uuid().v4();
-      prefs.setString('guestUserId', userId!);
-    } else {
-      isGuestUser = false;
-      userId = user.uid;
-    }
-
-    await _loadUserData();
-  }
-  Future<void> _loadUserData() async {
-    try {
-      if (userId != null) {
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .get();
-
-        if (userDoc.exists) {
-          final data = userDoc.data();
-          username = data?['name'] ?? 'USER';
-          email = data?['email'] ?? '';
-          phoneNumber = data?['phone_number'] ?? '';
-           firebaseImageUrl = data?['profile_image'] ?? '';
-        } else if (isGuestUser) {
-          
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          username = prefs.getString('guestUsername') ?? 'Guest';
-          email = prefs.getString('guestEmail') ?? '';
-          phoneNumber = prefs.getString('guestPhoneNumber') ?? '';
-             firebaseImageUrl= prefs.getString('guestProfileImage') ?? '';
-        }
-        setState(() {});
-      }
-    } catch (e) {
-      print("Error loading user data: $e");
-    }
-  }
   @override
   Widget build(BuildContext context) {
-    final signupProvider = Provider.of<SignupProvider>(context);
-    final purchaseProvider = Provider.of<PurchaseProvider>(context);
-    return SafeArea(
-      child: Scaffold(
-        
-        key: _scaffoldKey,
+    return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: CircleAvatar(
-    radius: 30,
-    backgroundImage: firebaseImageUrl != null && firebaseImageUrl!.isNotEmpty
-        ? NetworkImage('${AppConstant.awsBaseUrlUpload}$firebaseImageUrl')
-        : AssetImage('assets/default_avatar.png') as ImageProvider, // Provide a fallback if the image URL is empty
-  ),
-),
-
-        title:   Text(
-          " $username",
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-          ),
-        ],
+        title: Text('$selectedSkill - All Skills'),
       ),
-     drawer: Drawer(
-  child: Container(
-    color: Color.fromRGBO(124, 12, 17, 1), // Deep red background color
-    child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: Color.fromRGBO(124, 12, 17, 1),
-            padding: EdgeInsets.symmetric(vertical: 30),
-            child: Column(
-              children: [
-                CircleAvatar(
-  radius: 50, // Larger size for prominence
-  backgroundImage: firebaseImageUrl != null && firebaseImageUrl!.isNotEmpty
-      ? NetworkImage('${AppConstant.awsBaseUrlUpload}$firebaseImageUrl') // If a Firebase URL exists
-      : NetworkImage('${AppConstant.awsBaseUrl}/389/icons img/499f8320580c7ae3e569ed0c371bf600.png'), // Fallback image
-  backgroundColor: Colors.white, // Circle background
-),
-
-                SizedBox(height: 15), // Space below the avatar
-                Text(
-                  "$username", // Replace with dynamic username if available
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "$email", // Replace with dynamic email if available
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Divider(color: Colors.white38, thickness: 1), // Separator line
-          ListTile(
-            leading: Icon(Icons.restore, color: Colors.white),
-            title: Text(
-              'Restaurar compras',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            onTap: () async {
-              await purchaseProvider.restoreItem();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              signupProvider.isGuest ? Icons.login : Icons.logout,
+      body: ListView.builder(
+        itemCount: skillData[selectedSkill]?.length ?? 0,
+        itemBuilder: (context, index) {
+          final skill = skillData[selectedSkill]![index];
+          final data=skill["data"];
+          return Container(
+            height: 100,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
               color: Colors.white,
-            ),
-            title: Text(
-              signupProvider.isGuest ? 'Conecte-se' : 'Sair',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            onTap: () async {
-              if (signupProvider.isGuest) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              } else {
-                await signupProvider.signOut(context);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              }
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.delete, color: Colors.white),
-            title: Text(
-              'Excluir conta',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            onTap: () {
-              signupProvider.deleteAccount(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.restore, color: Colors.white),
-            title: Text(
-              'Remover anúncios',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            onTap: () async {
-              if (purchaseProvider.products.isNotEmpty) {
-                await purchaseProvider.buyProduct(purchaseProvider.products[0]);
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const InAppPurchasePage()),
-              );
-            },
-          ),
-          
-        ],
-      ),
-    ),
-  ),
-),
-
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Consumer<SignupProvider>(builder: (context, signupProvider, child) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 360,
-                  height: 200,
-                  
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    
-                    borderRadius: BorderRadius.circular(15),
-                    image: DecorationImage(image: ExactAssetImage("assets/pikaso_embed 1.png"),fit: BoxFit.cover)
+              child: Row(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 15, top: 10, bottom: 10),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        skill['image'],
+                        width: 100,
+                        height: 90,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10),
-                          Text(
-                            'Masterclass de futebol',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  SizedBox(width: 15), // Add space between image and text
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          skill["name"],
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
                           ),
-                          SizedBox(height: 5),
-                          Text(
-                            'Do iniciante ao profissional: domine\n todos os aspectos do jogo',
-                            style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: IconButton(
+                      icon: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.green, width: 2),
+                        ),
+                        child: Icon(Icons.play_arrow, color: Colors.green),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SkillDetailScreen(skillData:data),
                           ),
-                          SizedBox(height: 30),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SoccerHomeScreen()));
-                            },
-                            icon: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
-                              ),
-                              child: Icon(Icons.play_arrow, size: 20),
-                            ),
-                            label: Text(
-                              'Comece a aprender',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        right: -16,
-                        bottom: -16,
-                        child: Image.network(
-                           "${AppConstant.awsBaseUrl}/403/file (45) 1.png" ,
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                // Skill Cards Section
-                Text(
-                  'Habilidades e dicas de futebol',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Text("Melhore o seu jogo com dicas específicas para cada habilidade"),
-                SizedBox(height: 10),
-                // Skill Chips Row
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'Drible',
-                          isSelected: selectedSkill == 'Drible',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'Drible';
-                            });
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'Passagem',
-                          isSelected: selectedSkill == 'Passagem',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'Passagem';
-                            });
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'Dicas de tiro',
-                          isSelected: selectedSkill == 'Dicas de tiro',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'Dicas de tiro';
-                            });
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'Defesa',
-                          isSelected: selectedSkill == 'Defesa',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'Defesa';
-                            });
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'Goleiro',
-                          isSelected: selectedSkill == 'Goleiro',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'Goleiro';
-                            });
-                          },
-                        ),
-                      ),
-                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SkillChip(
-                          label: 'conjunto de peças',
-                          isSelected: selectedSkill == 'conjunto de peças',
-                          onTap: () {
-                            setState(() {
-                              selectedSkill = 'conjunto de peças';
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-              
-                // Display the skills based on the selected skill
-                if (selectedSkill != null)
-                  Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensures proper spacing
-              children: [
-                Expanded(
-                  child: Text(
-                    '${selectedSkill!}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis, // Prevents overflow
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if (selectedSkill != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AllSkillsScreen(selectedSkill: selectedSkill!),
-              ),
-            );
-                    }
-                  },
-                  child: Text(
-                    "View all",
-                    style: TextStyle(color: Colors.black, fontSize: 19),
-                  ),
-                ),
-              ],
-            ),
-            
-                SizedBox(height: 10),
-                if (selectedSkill != null)
-                  ListView.builder(
-  shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-  itemCount: skillData[selectedSkill]?.length ?? 0,
-  itemBuilder: (context, index) {
-    final skill = skillData[selectedSkill]![index];
-    final data = skill["data"];
-    return Container(
-  height: 120,
-  margin: EdgeInsets.symmetric(vertical: 10),
-  child: Card(
-    elevation: 6,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
-    color: Colors.white,
-    child: Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(15), // Rounded corners
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blueAccent, Colors.lightBlue],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-             child: Image.network(
-  '${AppConstant.awsBaseUrl}${skill['image']}', // Concatenating the base URL and image path
-  fit: BoxFit.cover,
-),
-
-            ),
-          ),
-        ),
-        SizedBox(width: 15), // Space between image and text
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                skill["name"],
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8), // Space between name and description
-              // Text(
-              //   data["subtitle"] ?? "Description not available",
-              //   style: TextStyle(
-              //     color: Colors.black54,
-              //     fontSize: 14,
-              //   ),
-              //   maxLines: 2,
-              //   overflow: TextOverflow.ellipsis,
-              // ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: IconButton(
-            icon: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.green, Colors.lightGreen],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.green.withOpacity(0.5),
-                    blurRadius: 8,
-                    offset: Offset(2, 2),
+                        );
+                        // Add any logic for when the play button is pressed
+                      },
+                    ),
                   ),
                 ],
               ),
-              child: Icon(Icons.play_arrow, color: Colors.white, size: 20),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SkillDetailScreen(skillData: data),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
-  },
-)
-
-              ],
-          
-            );
-          }
-          ),
-        ),
+          );
+        },
       ),
     );
   }
-}
-
-class SkillChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;  // Callback to update selection
-
-  SkillChip({
-    required this.label,
-    this.isSelected = false,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,  // Handle tap and call the callback
-      child: Chip(
-        label: Text(label),
-        backgroundColor: isSelected ? Colors.green : Colors.white,
-      ),
-    );
-  }
-}
-
-
-class Tip {
-  final String title;
-  final List<String> skills;
-
-  Tip({required this.title, required this.skills});
 }
