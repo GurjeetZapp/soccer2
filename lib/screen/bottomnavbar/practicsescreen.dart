@@ -46,19 +46,7 @@ class _PractiseScreenState extends State<PractiseScreen> {
 
 
  final Map instructionsData = {
-  'Tiros poderosos': {
-    "instructions": [
-      "Configure uma área de prática com cones como alvos à distância.",
-      "Use a parte superior do pé (cadarços) para chutar a bola com força.",
-      "Posicione o pé de apoio firmemente ao lado da bola para estabilidade.",
-      "Concentre-se em seguir o movimento após o chute para gerar mais força."
-    ],
-    "tipsForSuccess": [
-      "Evite inclinar-se muito para trás para não enviar a bola acima do gol.",
-      "Pratique acertar o centro ou a parte inferior da bola para potência máxima."
-    ]
-  },
-  'Fechar controle': {
+  'Fechar controle':{
     "instructions": [
       "Coloque cones em uma linha reta.",
       "Drible a bola pelos cones usando toques pequenos e rápidos.",
@@ -70,8 +58,7 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Mantenha a cabeça erguida enquanto dribla."
     ]
   },
-  'Drible sob pressão': {
-    "instructions": [
+  'Sob pressão':{ "instructions": [
       "Configure uma pequena área com cones para simular espaços apertados.",
       "Peça a um parceiro ou treinador para aplicar leve pressão enquanto você dribla.",
       "Concentre-se em tomar decisões rápidas e manter a posse sob pressão.",
@@ -80,22 +67,18 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Permaneça calmo e composto quando os defensores se aproximarem.",
       "Mantenha a cabeça erguida para identificar aberturas e passes."
-    ]
-  },
-  'Drible rápido': {
-    "instruções": [
+    ]},
+    'Drible de velocidade':{"instructions": [
       "Coloque cones em linha reta com lacunas maiores entre eles.",
       "Drible a bola em alta velocidade, usando toques grandes em espaços abertos.",
       "Diminua a velocidade e dê toques menores ao se aproximar de áreas mais estreitas.",
       "Concentre-se na transição entre velocidade e controle."
     ],
-    "dicasParaSucesso": [
+    "tipsForSuccess": [
       "Empurre a bola com a parte superior do pé para melhor controle de velocidade.",
       "Sempre olhe para cima para monitorar seus arredores."
-    ]
-  },
-  'Manuseio de bola em espaços apertados': {
-    "instructions": [
+    ]},
+    'Manuseio de bola em espaços apertados':{"instructions": [
       "Use uma grade pequena marcada com cones para criar uma área apertada.",
       "Pratique movimentar a bola rapidamente usando toques pequenos e frequentes.",
       "Incorpore fintas corporais e giros para evitar defensores imaginários.",
@@ -104,10 +87,8 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Use seu corpo para proteger a bola em áreas apertadas.",
       "Mantenha seus movimentos imprevisíveis com mudanças repentinas de direção."
-    ]
-  },
-  'Protegendo a bola': {
-    "instructions": [
+    ]},
+    'Protegendo a bola':{ "instructions": [
       "Pratique proteger a bola com as costas para um defensor.",
       "Concentre-se em usar seu corpo para bloquear o defensor de alcançar a bola.",
       "Dobre levemente os joelhos para manter um centro de gravidade baixo.",
@@ -116,10 +97,8 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Mantenha seu corpo entre o defensor e a bola.",
       "Permaneça equilibrado e evite depender excessivamente de seus braços."
-    ]
-  },
-  'Drible um contra um': {
-    "instructions": [
+    ]},
+    'Dribles um contra um':{"instructions": [
       "Configure uma pequena área e revezem-se sendo o atacante e o defensor.",
       "Pratique usar fintas e mudanças rápidas de direção para superar seu oponente.",
       "Concentre-se em cronometrar seus movimentos para explorar erros defensivos.",
@@ -128,9 +107,19 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Use uma variedade de movimentos para permanecer imprevisível.",
       "Seja confiante e comprometa-se com suas decisões."
-    ]
-  },
-  'Tiros finos':{ "instructions": [
+    ]},
+
+     'Chutes Poderosos':{"instructions": [
+      "Configure uma área de prática com cones como alvos à distância.",
+      "Use a parte superior do pé (cadarços) para chutar a bola com força.",
+      "Posicione o pé de apoio firmemente ao lado da bola para estabilidade.",
+      "Concentre-se em seguir o movimento após o chute para gerar mais força."
+    ],
+    "tipsForSuccess": [
+      "Evite inclinar-se muito para trás para não enviar a bola acima do gol.",
+      "Pratique acertar o centro ou a parte inferior da bola para potência máxima."
+    ]}  ,
+    'Chutes Colocados':{ "instructions": [
       "Configure cones nos cantos do gol para praticar a precisão.",
       "Use o lado interno do pé para adicionar curva ao chute.",
       "Concentre-se em mirar nos cantos do gol, longe do goleiro.",
@@ -139,9 +128,8 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Mantenha o equilíbrio durante o chute para melhor controle.",
       "Pratique encontrar o equilíbrio entre curva e força no chute."
-    ]
-  },
-  'Tiros de ficha':{"instructions": [
+    ]},
+    'Chutes de Cavadinha':{ "instructions": [
       "Pratique chutar a bola com um toque leve na parte inferior para levantá-la.",
       "Use a ponta do pé ou a parte de dentro do pé para controle.",
       "Concentre-se em levantar a bola sobre um goleiro imaginário.",
@@ -151,19 +139,7 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Use um toque suave para evitar enviar a bola muito longe.",
       "Certifique-se de levantar a bola o suficiente para superar o goleiro."
     ]},
-  'Tiros de voleibol':{ "instructions": [
-      "Configure uma área de prática com um parceiro cruzando a bola para você.",
-      "Concentre-se em cronometrar o chute para acertar a bola no ar.",
-      "Use os cadarços ou o lado interno do pé para controlar o chute.",
-      "Mantenha o equilíbrio, inclinando-se levemente para frente durante o chute."
-    ],
-    "tipsForSuccess": [
-      "Foque na bola enquanto ela cai para acertar no momento certo.",
-      "Evite inclinar-se muito para trás para manter o chute direcionado ao gol."
-    ]
-
-  },
-  'Tiros de Longo Alcance':{ "instructions": [
+    'Chutes de Voleio':{ "instructions": [
       "Configure uma área de prática com um parceiro cruzando a bola para você.",
       "Concentre-se em cronometrar o chute para acertar a bola no ar.",
       "Use os cadarços ou o lado interno do pé para controlar o chute.",
@@ -173,7 +149,17 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Foque na bola enquanto ela cai para acertar no momento certo.",
       "Evite inclinar-se muito para trás para manter o chute direcionado ao gol."
     ]},
-  'Pontapés Livres':{ "instructions": [
+    'Chutes de Longa Distância':{ "instructions": [
+      "Configure cones no gol para praticar a precisão de longa distância.",
+      "Use os cadarços para gerar potência nos chutes de fora da área.",
+      "Concentre-se em mirar nos cantos inferiores para dificultar a defesa do goleiro.",
+      "Complete o movimento do chute para maximizar a precisão e a distância."
+    ],
+    "tipsForSuccess": [
+      "Pratique ler a posição do goleiro antes de chutar.",
+      "Evite chutar sem seguir o movimento para garantir potência e precisão."
+    ]},
+    'Cobranças de Falta':{ "instructions": [
       "Configure uma barreira com cones ou manequins para simular adversários.",
       "Use o lado interno ou os cadarços para chutar, dependendo da técnica desejada.",
       "Pratique adicionar curva ao chute para superar a barreira.",
@@ -182,39 +168,28 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Evite apressar o chute; tome seu tempo para alinhar e focar.",
       "Certifique-se de seguir o movimento para concluir o chute com força ou curva."
-    ]
-  },
-  '1v1 Defesa':{"instructions": [
-      "Posicione-se de forma lateral ao atacante para mostrar o lado menos perigoso.",
-      "Espere o momento certo para atacar a bola; não se precipite.",
-      "Mantenha o equilíbrio e esteja pronto para mudar de direção rapidamente.",
-      "Pratique enfrentar atacantes em espaços apertados, focando em tempo e posicionamento."
+    ]},
+    'Técnicas de Desarme':{"instructions": [
+      "Pratique desarmes em um treino 1v1 com um parceiro.",
+      "Foque no tempo e na precisão para ganhar a bola sem cometer faltas.",
+      "Experimente desarmes em pé e carrinhos em situações simuladas.",
+      "Evite comprometer-se cedo; mantenha o equilíbrio e espere o momento certo."
     ],
     "tipsForSuccess": [
-      "Force o atacante a cometer um erro antes de atacar a bola.",
-      "Não dê muito espaço para o atacante ganhar velocidade."
+      "Cronometre seu desarme para acertar a bola primeiro.",
+      "Evite se comprometer demais e se expor ao ataque."
     ]},
-  'Bloqueio de tiros':{ "instructions": [
-      "Posicione-se no caminho do chute para bloquear a bola.",
-      "Mantenha o equilíbrio e esteja pronto para mover-se rapidamente.",
-      "Use o corpo para bloquear o chute sem expor as mãos ou braços.",
-      "Comprometa-se totalmente ao bloqueio para impedir que a bola passe."
+    '"Marcação com Contenção':{ "instructions": [
+      "Posicione-se entre o atacante e o gol para limitar as opções do adversário.",
+      "Mantenha o centro de gravidade baixo para reagir rapidamente.",
+      "Use movimentos laterais rápidos para acompanhar o atacante.",
+      "Evite comprometer-se; mantenha a paciência e espere pelo erro do atacante."
     ],
     "tipsForSuccess": [
-      "Nunca vire as costas para a bola ao tentar bloquear.",
-      "Evite hesitar; comprometa-se completamente ao bloqueio."
+      "Concentre-se em direcionar o atacante para áreas menos perigosas.",
+      "Não mergulhe no desarme cedo demais; mantenha sua posição."
     ]},
-   'Interceptações':{  "instructions": [
-      "Pratique posicionar-se nas linhas de passe para interceptar a bola.",
-      "Leia os movimentos do adversário para antecipar passes.",
-      "Concentre-se em reagir rapidamente quando a bola for passada.",
-      "Use jogos em pequenos espaços para simular situações de interceptação."
-    ],
-    "tipsForSuccess": [
-      "Não se apresse para interceptar; espere a oportunidade certa.",
-      "Sempre esteja ciente de onde estão os adversários e seus companheiros."
-    ]},
-      'Marcação e Posicionamento':{ "instructions": [
+    'Marcação e Posicionamento':{ "instructions": [
       "Pratique ficar próximo ao jogador adversário que você está marcando.",
       "Posicione-se entre o adversário e o gol para bloquear o caminho.",
       "Leia o jogo e ajuste sua posição para interceptar passes ou bloquear chutes.",
@@ -224,32 +199,37 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Evite assistir apenas à bola; mantenha o adversário em sua visão.",
       "Fique em posição de reação para acompanhar os movimentos rápidos."
     ]},
-  "Posicionamento": { 
-    "instructions": [
-      "Posicione-se entre o atacante e o gol para limitar as opções do adversário.",
-      "Mantenha o centro de gravidade baixo para reagir rapidamente.",
-      "Use movimentos laterais rápidos para acompanhar o atacante.",
-      "Evite comprometer-se; mantenha a paciência e espere pelo erro do atacante."
+    'Intercepções':{ "instructions": [
+      "Pratique posicionar-se nas linhas de passe para interceptar a bola.",
+      "Leia os movimentos do adversário para antecipar passes.",
+      "Concentre-se em reagir rapidamente quando a bola for passada.",
+      "Use jogos em pequenos espaços para simular situações de interceptação."
     ],
     "tipsForSuccess": [
-      "Concentre-se em direcionar o atacante para áreas menos perigosas.",
-      "Não mergulhe no desarme cedo demais; mantenha sua posição."
-    ]
-  },
-  "Técnicas de Desarme": {  
-    "instructions": [
-      "Pratique desarmes em um treino 1v1 com um parceiro.",
-      "Foque no tempo e na precisão para ganhar a bola sem cometer faltas.",
-      "Experimente desarmes em pé e carrinhos em situações simuladas.",
-      "Evite comprometer-se cedo; mantenha o equilíbrio e espere o momento certo."
+      "Não se apresse para interceptar; espere a oportunidade certa.",
+      "Sempre esteja ciente de onde estão os adversários e seus companheiros."
+    ]},
+    'Bloqueio de Chutes':{"instructions": [
+      "Posicione-se no caminho do chute para bloquear a bola.",
+      "Mantenha o equilíbrio e esteja pronto para mover-se rapidamente.",
+      "Use o corpo para bloquear o chute sem expor as mãos ou braços.",
+      "Comprometa-se totalmente ao bloqueio para impedir que a bola passe."
     ],
     "tipsForSuccess": [
-      "Cronometre seu desarme para acertar a bola primeiro.",
-      "Evite se comprometer demais e se expor ao ataque."
-    ]
-  },
-  "Passes Curtos": { 
-    "instructions": [
+      "Nunca vire as costas para a bola ao tentar bloquear.",
+      "Evite hesitar; comprometa-se completamente ao bloqueio."
+    ]},
+    'Defesa 1v1':{ "instructions": [
+      "Posicione-se de forma lateral ao atacante para mostrar o lado menos perigoso.",
+      "Espere o momento certo para atacar a bola; não se precipite.",
+      "Mantenha o equilíbrio e esteja pronto para mudar de direção rapidamente.",
+      "Pratique enfrentar atacantes em espaços apertados, focando em tempo e posicionamento."
+    ],
+    "tipsForSuccess": [
+      "Force o atacante a cometer um erro antes de atacar a bola.",
+      "Não dê muito espaço para o atacante ganhar velocidade."
+    ]},
+    'Passes Curtos':{"instructions": [
       "Use a parte interna do pé para passes curtos e precisos.",
       "Pratique passes rápidos com um parceiro, focando na precisão.",
       "Mantenha a bola no chão para facilitar o controle do companheiro.",
@@ -258,34 +238,28 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Evite bater na bola com muita força; mantenha o passe controlado.",
       "Sempre olhe para o movimento do seu companheiro antes de passar."
-    ]
-  },
-  "Mudança de Jogo": {  
-    "instructions": [
-      "Levante a bola por cima dos defensores para mudar de lado.",
-      "Pratique passes longos para alcançar companheiros em áreas abertas.",
-      "Leia o campo antes de receber a bola para planejar a troca de jogo.",
-      "Use o pé externo para passes curvados em distâncias curtas."
+    ]},
+    'Passes Longos':{ "instructions": [
+      "Use o peito do pé para realizar passes longos com força e precisão.",
+      "Pratique levantar a bola para alcançar companheiros em áreas distantes.",
+      "Ajuste a força do passe para evitar que ele seja muito curto ou longo.",
+      "Mire no alvo e siga com o movimento para garantir a precisão."
     ],
     "tipsForSuccess": [
-      "Sempre verifique suas opções antes de mudar o jogo.",
-      "Evite subestimar a força necessária para alcançar o outro lado."
-    ]
-  },
-  "Passe de Primeira": { 
-    "instructions": [
-      "Antecipe onde a bola vai antes de recebê-la para um passe rápido.",
-      "Use o interior do pé para melhor controle e precisão.",
-      "Pratique passes de primeira em um jogo pequeno para melhorar sua velocidade.",
-      "Foque em manter o equilíbrio durante o passe para maior estabilidade."
+      "Certifique-se de levantar a bola o suficiente para evitar defensores.",
+      "Foque na precisão ao invés de apenas força."
+    ]},
+    'Passes em Profundidade':{ "instructions": [
+      "Sincronize o passe com a corrida do seu companheiro de equipe.",
+      "Pratique encontrar espaços entre os defensores para passar a bola.",
+      "Use o peso correto no passe para que seu companheiro possa alcançá-lo.",
+      "Acompanhe o movimento da defesa para identificar lacunas."
     ],
     "tipsForSuccess": [
-      "Trabalhe no seu primeiro toque para preparar passes rápidos.",
-      "Evite hesitar; tome decisões rápidas para manter o jogo fluido."
-    ]
-  },
-  "Cruzamento": { 
-    "instructions": [
+      "Evite passar a bola cedo ou tarde demais; o tempo é crucial.",
+      "Certifique-se de que o passe seja direto e preciso."
+    ]},
+    'Cruzamento d':{"instructions": [
       "Levante a cabeça antes de cruzar para localizar seus companheiros.",
       "Use o interior do pé para adicionar curva ao cruzamento.",
       "Mire no poste traseiro para dar tempo aos atacantes de se posicionarem.",
@@ -296,92 +270,27 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Certifique-se de dar força suficiente para que o cruzamento supere os defensores."
     ]
   },
-  "Passes em Profundidade": { 
-    "instructions": [
-      "Sincronize o passe com a corrida do seu companheiro de equipe.",
-      "Pratique encontrar espaços entre os defensores para passar a bola.",
-      "Use o peso correto no passe para que seu companheiro possa alcançá-lo.",
-      "Acompanhe o movimento da defesa para identificar lacunas."
+    'Passes de Primeira':{ "instructions": [
+      "Antecipe onde a bola vai antes de recebê-la para um passe rápido.",
+      "Use o interior do pé para melhor controle e precisão.",
+      "Pratique passes de primeira em um jogo pequeno para melhorar sua velocidade.",
+      "Foque em manter o equilíbrio durante o passe para maior estabilidade."
     ],
     "tipsForSuccess": [
-      "Evite passar a bola cedo ou tarde demais; o tempo é crucial.",
-      "Certifique-se de que o passe seja direto e preciso."
-    ]
-  },
-  "Passes Longos": {
-    "instructions": [
-      "Use o peito do pé para realizar passes longos com força e precisão.",
-      "Pratique levantar a bola para alcançar companheiros em áreas distantes.",
-      "Ajuste a força do passe para evitar que ele seja muito curto ou longo.",
-      "Mire no alvo e siga com o movimento para garantir a precisão."
+      "Trabalhe no seu primeiro toque para preparar passes rápidos.",
+      "Evite hesitar; tome decisões rápidas para manter o jogo fluido."
+    ]},
+    'Mudança de Jogo':{"instructions": [
+      "Levante a bola por cima dos defensores para mudar de lado.",
+      "Pratique passes longos para alcançar companheiros em áreas abertas.",
+      "Leia o campo antes de receber a bola para planejar a troca de jogo.",
+      "Use o pé externo para passes curvados em distâncias curtas."
     ],
     "tipsForSuccess": [
-      "Certifique-se de levantar a bola o suficiente para evitar defensores.",
-      "Foque na precisão ao invés de apenas força."
-    ]
-  },
-  "Técnica de Mergulho": { 
-    "instructions": [
-      "Dê um passo rápido na direção do chute antes de mergulhar.",
-      "Estenda totalmente o corpo para cobrir o máximo de área possível.",
-      "Pratique mergulhos baixos para defender chutes nos cantos inferiores.",
-      "Mantenha o foco na bola para sincronizar corretamente o mergulho."
-    ],
-    "tipsForSuccess": [
-      "Sempre dê um passo na direção da bola antes de mergulhar.",
-      "Certifique-se de estender completamente o corpo ao mergulhar."
-    ]
-  },
-  "Defesas de Pênaltis": { 
-    "instructions": [
-      "Observe a linguagem corporal e a posição dos pés do cobrador.",
-      "Mantenha-se centralizado no gol antes do chute ser executado.",
-      "Reaja rapidamente na direção do chute assim que ele for feito.",
-      "Pratique simulações de pênaltis para melhorar sua tomada de decisão."
-    ],
-    "tipsForSuccess": [
-      "Evite adivinhar cedo demais; mantenha-se equilibrado até o chute.",
-      "Fique um pouco à frente da linha do gol para reduzir o ângulo do cobrador."
-    ]
-  },
-  "Distribuição da Bola": { 
-    "instructions": [
-      "Use arremessos curtos para passes precisos a companheiros próximos.",
-      "Pratique chutes longos para alcançar jogadores avançados.",
-      "Analise o campo antes de distribuir a bola para evitar perdas.",
-      "Ajuste sua técnica para chutes e lançamentos em diferentes distâncias."
-    ],
-    "tipsForSuccess": [
-      "Não se apresse; avalie a melhor opção antes de distribuir a bola.",
-      "Foque na precisão em vez da força ao lançar ou chutar."
-    ]
-  },
-  "Pegando Cruzamentos": {
-    "instructions": [
-      "Cronometre seu salto para alcançar a bola no ponto mais alto.",
-      "Segure a bola com as duas mãos para maior controle.",
-      "Comunique-se claramente com os defensores antes de sair para interceptar.",
-      "Pratique posicionar-se corretamente em relação ao cruzamento."
-    ],
-    "tipsForSuccess": [
-      "Evite pular cedo ou tarde demais; cronometre o salto com precisão.",
-      "Certifique-se de comunicar suas intenções para evitar confusões."
-    ]
-  },
-  "Posicionamento do Goleiro": {
-    "instructions": [
-      "Mantenha-se centralizado em relação à bola e ao gol.",
-      "Ajuste sua posição com base na localização da bola no campo.",
-      "Avance ligeiramente para reduzir o ângulo de chute do atacante.",
-      "Fique atento a mudanças rápidas na direção da jogada."
-    ],
-    "tipsForSuccess": [
-      "Evite ficar muito próximo da linha do gol; avance quando necessário.",
-      "Esteja sempre em movimento para ajustar seu posicionamento."
-    ]
-  },
-  "Defesas de Chutes": {
-    "instructions": [
+      "Sempre verifique suas opções antes de mudar o jogo.",
+      "Evite subestimar a força necessária para alcançar o outro lado."
+    ]},
+     'Defesa de Chutes':{ "instructions": [
       "Mantenha uma posição central no gol para cobrir ambos os lados.",
       "Pratique reflexos rápidos para reagir a chutes de diferentes ângulos.",
       "Decida se vai segurar ou desviar a bola, dependendo da força do chute.",
@@ -390,22 +299,103 @@ class _PractiseScreenState extends State<PractiseScreen> {
     "tipsForSuccess": [
       "Não se comprometa cedo demais ao mergulhar; espere para reagir.",
       "Mantenha as mãos prontas e na posição correta para defender chutes."
-    ]
-  },
-  "Cobrança de Pênaltis": {
-    "instructions": [
-      "Escolha um canto antes de cobrar e mantenha sua decisão.",
-      "Mantenha a calma e concentre-se na técnica ao executar o chute.",
-      "Use o pé interno para maior controle e precisão.",
-      "Treine sob pressão para simular situações reais de jogo."
+    ]},
+    'Posicionamento':{ "instructions": [
+      "Mantenha-se centralizado em relação à bola e ao gol.",
+      "Ajuste sua posição com base na localização da bola no campo.",
+      "Avance ligeiramente para reduzir o ângulo de chute do atacante.",
+      "Fique atento a mudanças rápidas na direção da jogada."
     ],
     "tipsForSuccess": [
-      "Evite mudar de ideia no último momento; mantenha o plano original.",
-      "Foque na precisão e não apenas na força do chute."
-    ]
-  },
-  "Reposições de Bola": {
-    "instructions": [
+      "Evite ficar muito próximo da linha do gol; avance quando necessário.",
+      "Esteja sempre em movimento para ajustar seu posicionamento."
+    ]},
+    'Defesa de Cruzamentos':{ "instructions": [
+      "Cronometre seu salto para alcançar a bola no ponto mais alto.",
+      "Segure a bola com as duas mãos para maior controle.",
+      "Comunique-se claramente com os defensores antes de sair para interceptar.",
+      "Pratique posicionar-se corretamente em relação ao cruzamento."
+    ],
+    "tipsForSuccess": [
+      "Evite pular cedo ou tarde demais; cronometre o salto com precisão.",
+      "Certifique-se de comunicar suas intenções para evitar confusões."
+    ]},
+    
+    'Distribuição da Bola':{"instructions": [
+      "Use arremessos curtos para passes precisos a companheiros próximos.",
+      "Pratique chutes longos para alcançar jogadores avançados.",
+      "Analise o campo antes de distribuir a bola para evitar perdas.",
+      "Ajuste sua técnica para chutes e lançamentos em diferentes distâncias."
+    ],
+    "tipsForSuccess": [
+      "Não se apresse; avalie a melhor opção antes de distribuir a bola.",
+      "Foque na precisão em vez da força ao lançar ou chutar."
+    ]},
+    'Defesa de Pênaltis':{"instructions": [
+      "Observe a linguagem corporal e a posição dos pés do cobrador.",
+      "Mantenha-se centralizado no gol antes do chute ser executado.",
+      "Reaja rapidamente na direção do chute assim que ele for feito.",
+      "Pratique simulações de pênaltis para melhorar sua tomada de decisão."
+    ],
+    "tipsForSuccess": [
+      "Evite adivinhar cedo demais; mantenha-se equilibrado até o chute.",
+      "Fique um pouco à frente da linha do gol para reduzir o ângulo do cobrador."
+    ]},
+    'Técnica de Mergulho':{"instructions": [
+      "Dê um passo rápido na direção do chute antes de mergulhar.",
+      "Estenda totalmente o corpo para cobrir o máximo de área possível.",
+      "Pratique mergulhos baixos para defender chutes nos cantos inferiores.",
+      "Mantenha o foco na bola para sincronizar corretamente o mergulho."
+    ],
+    "tipsForSuccess": [
+      "Sempre dê um passo na direção da bola antes de mergulhar.",
+      "Certifique-se de estender completamente o corpo ao mergulhar."
+    ]},
+
+  
+    'Cantos Ofensivos':{ "instructions": [
+      "Use o pé interno para cruzar a bola com velocidade e efeito.",
+      "Apontar para áreas-chave, como o primeiro poste, segundo poste ou o ponto de penalidade.",
+      "Treine a sincronia de corridas para encontrar a bola no ponto mais alto.",
+      "Comunique-se com os atacantes para coordenar melhor as jogadas."
+    ],
+    "tipsForSuccess": [
+      "Certifique-se de cruzar a bola com precisão e força suficientes.",
+      "Comunique-se claramente para evitar confusões entre os jogadores."
+    ]},
+    'Cobranças Diretas de Falta':{ "instructions": [
+      "Marque os oponentes de perto para evitar cabeceios perigosos.",
+      "Seja rápido para limpar a bola na primeira oportunidade.",
+      "Esteja alerta para reagir a segundas bolas após o cruzamento inicial.",
+      "Organize a defesa para cobrir áreas perigosas dentro da área."
+    ],
+    "tipsForSuccess": [
+      "Evite assistir à bola; mantenha o foco em seu oponente.",
+      "Comunique-se com outros defensores para organizar a linha defensiva."
+    ]},
+    'Cobranças Indiretas de Falta':{ "instructions": [
+      "Posicione a bola no local ideal para um chute limpo.",
+      "Use o pé interno para efeito ou os cadarços para chutes potentes.",
+      "Aponte para os cantos superiores ou inferiores, onde o goleiro tem menos alcance.",
+      "Pratique diferentes técnicas de chute dependendo da distância da meta."
+    ],
+    "tipsForSuccess": [
+      "Evite acertar a barreira; concentre-se em levantar a bola com precisão.",
+      "Treine regularmente para melhorar sua precisão e força."
+    ]},
+
+    'Reposições com as Mãos':{"instructions": [
+      "Planeje um passe curto para um companheiro antes do chute.",
+      "Disfarce suas intenções para confundir a defesa.",
+      "Trabalhe em conjunto com os companheiros para executar jogadas ensaiadas.",
+      "Posicione a bola para facilitar um passe preciso e eficaz."
+    ],
+    "tipsForSuccess": [
+      "Certifique-se de que todos os jogadores conheçam suas funções na jogada ensaiada.",
+      "Execute a cobrança rapidamente para pegar a defesa desprevenida."
+    ]},
+
+    'Cobrança de Pênaltis':{ "instructions": [
       "Use ambas as mãos para lançar a bola acima da cabeça.",
       "Mantenha ambos os pés no chão durante a reposição.",
       "Procure companheiros de equipe em espaços abertos para uma reposição eficaz.",
@@ -416,71 +406,46 @@ class _PractiseScreenState extends State<PractiseScreen> {
       "Pratique reposições longas para aumentar o alcance de suas jogadas."
     ]
   },
-"Faltas Indiretas":{ 
-  "instruções": [
-    "Planeje um passe curto para um companheiro antes do chute.",
-    "Disfarce suas intenções para confundir a defesa.",
-    "Trabalhe em conjunto com os companheiros para executar jogadas ensaiadas.",
-    "Posicione a bola para facilitar um passe preciso e eficaz."
-  ],
-  "dicasParaSucesso": [
-    "Certifique-se de que todos os jogadores conheçam suas funções na jogada ensaiada.",
-    "Execute a cobrança rapidamente para pegar a defesa desprevenida."
-  ]
-},
-"Faltas Diretas":{ 
-  "instruções": [
-    "Posicione a bola no local ideal para um chute limpo.",
-    "Use o pé interno para efeito ou os cadarços para chutes potentes.",
-    "Aponte para os cantos superiores ou inferiores, onde o goleiro tem menos alcance.",
-    "Pratique diferentes técnicas de chute dependendo da distância da meta."
-  ],
-  "dicasParaSucesso": [
-    "Evite acertar a barreira; concentre-se em levantar a bola com precisão.",
-    "Treine regularmente para melhorar sua precisão e força."
-  ]
-},
-"Defendendo Escanteios":{ 
-  "instruções": [
-    "Marque os oponentes de perto para evitar cabeceios perigosos.",
-    "Seja rápido para limpar a bola na primeira oportunidade.",
-    "Esteja alerta para reagir a segundas bolas após o cruzamento inicial.",
-    "Organize a defesa para cobrir áreas perigosas dentro da área."
-  ],
-  "dicasParaSucesso": [
-    "Evite assistir à bola; mantenha o foco em seu oponente.",
-    "Comunique-se com outros defensores para organizar a linha defensiva."
-  ]
-},
-"Atacando Escanteios":{ 
-  "instruções": [
-    "Use o pé interno para cruzar a bola com velocidade e efeito.",
-    "Apontar para áreas-chave, como o primeiro poste, segundo poste ou o ponto de penalidade.",
-    "Treine a sincronia de corridas para encontrar a bola no ponto mais alto.",
-    "Comunique-se com os atacantes para coordenar melhor as jogadas."
-  ],
-  "dicasParaSucesso": [
-    "Certifique-se de cruzar a bola com precisão e força suficientes.",
-    "Comunique-se claramente para evitar confusões entre os jogadores."
-  ]
-}
-
-       
+  'Defesa de Cantos':{
+      "instructions": [
+      "Marque os oponentes de perto para evitar cabeceios perigosos.",
+      "Seja rápido para limpar a bola na primeira oportunidade.",
+      "Esteja alerta para reagir a segundas bolas após o cruzamento inicial.",
+      "Organize a defesa para cobrir áreas perigosas dentro da área."
+    ],
+    "tipsForSuccess": [
+      "Evite assistir à bola; mantenha o foco em seu oponente.",
+      "Comunique-se com outros defensores para organizar a linha defensiva."
+    ]
+  }
+ 
+  
+    
 
 };
 
 final Map<String, List<String>> categoryData = {
  
   'Dribles': [
-    'Controle de Bola',
-    'Drible Sob Pressão',
-    'Drible em Alta Velocidade',
-    'Controle de Bola em Espaços Apertados',
+    'Dribles um contra um'
+    'Protegendo a bola',
+    'Manuseamento de bola em espaços apertados',
+    'Drible de velocidade',
+    'sob pressão',
+    'Fechar controle',
+  ],
+  "Dicas de tiro":[
+    'Chutes Poderosos',
+    'Chutes Colocados',
+    'Chutes por Cavadinha',
+    'Chutes de Voleio',
+    'Chutes de Longa Distância',
+    'Cobranças de Falta',
   ],
   
   'Defesa': [
     'Técnicas de Desarme',
-    'Jogo de Corpo',
+    'Marcação com Contenção',
     'Marcação e Posicionamento',
     'Intercepções',
     'Bloqueio de Chutes',
@@ -490,7 +455,7 @@ final Map<String, List<String>> categoryData = {
     'Passes Curtos',
     'Passes Longos',
     'Passes em Profundidade',
-    'Cruzamentos',
+    'Cruzamento d',
     'Passes de Primeira',
     'Mudança de Jogo'
   ],
@@ -498,17 +463,19 @@ final Map<String, List<String>> categoryData = {
     'Defesa de Chutes',
     'Posicionamento',
     'Defesa de Cruzamentos',
+    
     'Distribuição da Bola',
-    'Defesas de Pênaltis',
-    'Técnica de Mergulho'
+    'Defesa de Pênaltis',
+    'Técnica de Mergulho',
   ],
   'conjunto de peças': [
-    'Cobranças de Escanteios Ofensivas',
-    'Cobranças de Escanteios Defensivas',
-    'Faltas Diretas',
-    'Faltas Indiretas',
-    'Cobranças de Lançamentos',
-    'Pênaltis'
+    'Cantos Ofensivos',
+    'Cobranças Diretas de Falta',
+    'Cobranças Indiretas de Falta',
+    'Reposições com as Mãos',
+    'Cobrança de Pênaltis',
+    'Defesa de Cantos',
+    
   ],
 
 };

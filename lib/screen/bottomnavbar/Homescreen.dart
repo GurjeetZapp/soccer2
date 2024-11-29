@@ -853,10 +853,10 @@ String? selectedSkill = 'Drible';
     }
   },
   {
-    'name': "Bloqueio de Chutes",
+    'name': "Intercepções",
     'image': "/403/371 tips Images/Defending Tips/4.webp",
     'data': {
-      "title": "5. Defendendo: Bloqueio de Chutes",
+      "title": "5. Intercepções",
       "subtitle": "Impeça os Adversários de Finalizarem",
       "description": "O bloqueio consiste em usar o corpo para evitar que um chute chegue ao gol, posicionando-se no caminho da bola e absorvendo o impacto.",
       "keyTechniques": [
