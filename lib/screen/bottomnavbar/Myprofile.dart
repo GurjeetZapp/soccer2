@@ -260,18 +260,18 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
         builder: (context, snapshot) {
           return Consumer<SignupProvider>(builder: (context, notifier, child) {
             return Scaffold(
-              backgroundColor: Color(0xFF121212),
+              backgroundColor:Colors.white,
               appBar: AppBar(
-                backgroundColor: Color(0xFF121212),
+                backgroundColor: Colors.white,
                 elevation: 0,
                 leading: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => MainScreen())),
                 ),
-                title: Text('Profile', style: TextStyle(color: Colors.white)),
+                title: Text('Perfil', style: TextStyle(color: Colors.black)),
                 centerTitle: true,
               ),
               body: SingleChildScrollView(
@@ -294,7 +294,7 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           SizedBox(height: 20),
@@ -334,14 +334,10 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
                           children: [
                             Stack(
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+                               
                                     
-                                    border: Border.all(color: Colors.red,width: 4),
-                                    
-                                  ),
-                                  child: CircleAvatar(
+                                  
+                                   CircleAvatar(
                                       radius: 50,
                                       child: ClipOval(
                                         
@@ -385,13 +381,13 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
                                                     fit: BoxFit.cover,
                                                   ),
                                       )),
-                                ),
+                              
                                 Positioned(
                                   bottom: -12,
                                   right: -10,
                                   child: IconButton(
                                     icon: Icon(Icons.camera_alt,
-                                        color: Colors.orange,size: 30,),
+                                        color:  Color.fromRGBO(124, 12, 17, 1),size: 30,),
                                     onPressed: () async {
                                       _pickImage();
                                     },
@@ -428,15 +424,15 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
                                 onPressed: () async {
                                   await _saveUserData(signupProvider);
                                 },
-                                child: Text('Save'),
+                                child: Text('Save',style: TextStyle(color: Colors.black),),
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(250, 49),
+                                  minimumSize: Size(130, 49),
                                   padding: EdgeInsets.symmetric(vertical: 15),
-                                  backgroundColor: Color(0xFF121212),
+                                  backgroundColor: Colors.white,
                                   foregroundColor: Colors.white,
                                   side: BorderSide(
-                                    width: 2.0, // Border width
-                                    color: Colors.orange, // Border color
+                                    width: 4.0, // Border width
+                                    color: Color.fromRGBO(124, 12, 17, 1), // Border color
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -447,17 +443,17 @@ Future<void> _saveUserData(SignupProvider signupProvider) async {
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: _logout,
-                              child: Text('Logout'),
+                              child: Text('Logout',style: TextStyle(color: Colors.black),),
                               style: ElevatedButton.styleFrom(
-                                minimumSize: Size(250, 49),
+                                minimumSize: Size(150, 49),
                                 padding: EdgeInsets.symmetric(vertical: 15),
-                                backgroundColor: Color(0xFF121212),
+                                backgroundColor: Colors.white,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                   side: BorderSide(
-                                    width: 2.0, // Border width
-                                    color: Colors.orange, // Border color
+                                    width: 4.0, // Border width
+                                    color:  Color.fromRGBO(124, 12, 17, 1), // Border color
                                   ),
                                 ),
                               ),
@@ -528,7 +524,7 @@ class ProfileOutlinedButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          side: const BorderSide(color: Colors.orange),
+          side: const BorderSide(color:  Color.fromRGBO(124, 12, 17, 1),width: 4),
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         ),
         icon: Image.network(
@@ -552,7 +548,7 @@ Widget _buildTextField(
     child: TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.black),
       inputFormatters: label == "Phone Number"
           ? [
               LengthLimitingTextInputFormatter(10), // Limit input to 10 digits
@@ -561,10 +557,10 @@ Widget _buildTextField(
           : null,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.white),
-        prefixIcon: Icon(icon, color: Colors.white),
+        labelStyle: TextStyle(color:  Color.fromRGBO(124, 12, 17, 1),),
+        prefixIcon: Icon(icon, color:  Color.fromRGBO(124, 12, 17, 1),),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white, width: 1),
+          borderSide: BorderSide(color: Colors.black, width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(

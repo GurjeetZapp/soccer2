@@ -125,7 +125,7 @@ class _MyStatisticsScreenState extends State<MyStatisticsScreen> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("My Statistics"),
+        title: Text("Minhas estatísticas"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +143,7 @@ class _MyStatisticsScreenState extends State<MyStatisticsScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text("Practice Data"),
+                    child: Text("Dados práticos"),
                   ),
                 ),
                 SizedBox(width: 8),
@@ -156,7 +156,7 @@ class _MyStatisticsScreenState extends State<MyStatisticsScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Text("Graph", style: TextStyle(color: Colors.black)),
+                    child: Text("Gráfico", style: TextStyle(color: Colors.black)),
                   ),
                 ),
               ],
@@ -296,16 +296,18 @@ class _PracticeDataScreenState extends State<PracticeDataScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date Range Display
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton.icon(
-                  onPressed: () => _selectDateRange(context),
-                  icon: Icon(Icons.date_range),
-                  label: Text("Select Date Range"),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, 
-                    backgroundColor: Color.fromRGBO(124, 12, 17, 1),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _selectDateRange(context),
+                    icon: Icon(Icons.date_range),
+                    label: Text("Selecione o intervalo de datas"),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white, 
+                      backgroundColor: Color.fromRGBO(124, 12, 17, 1),
+                    ),
                   ),
                 ),
                 Text(
@@ -321,7 +323,7 @@ class _PracticeDataScreenState extends State<PracticeDataScreen> {
               child: practiceData.isEmpty
                   ? Center(
                       child: Text(
-                        "No Data Available",
+                        "Nenhum dado disponível",
                         style: TextStyle(color: Colors.grey, fontSize: 18),
                       ),
                     )
